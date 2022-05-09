@@ -1,45 +1,16 @@
-# LOG4J配置，设置输出的最低级别，此处设置的是根节点
-log4j:
-  rootCategory: debug, stdout, file, D
-
-  appender:
-    stdout: org.apache.log4j.ConsoleAppender
-    layout: org.apache.log4j.PatternLayout
-      ConversionPattern: %d{yyyy-MM-dd HH:mm:ss,SSS} %5p %c{1}:%L - %m%n
-
-  # 控制台输出  只输出error级别以上的信息
-
-log4j.appender.stdout.layout.ConversionPattern=
-  # 输出到文件
-  # root日志输出
-log4j.appender.file=org.apache.log4j.FileAppender
-log4j.appender.file.file=D:/LogFile/allLog.log
-log4j.appender.file.DatePattern='.'yyyy-MM-dd
-  # 此处设置文件内容不覆盖，而是自动往后追加
-log4j.appender.file.Append=true
-log4j.appender.file.Threshold =info
-log4j.appender.file.layout=org.apache.log4j.PatternLayout
-log4j.appender.file.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,SSS} %5p %c{1}:%L - %m%n
-  # 错误日志输出
-  # error日志输出
-log4j.appender.D = org.apache.log4j.DailyRollingFileAppender
-  ## 异常日志文件名
-log4j.appender.D.File = D:/LogFile/error.log
-log4j.appender.D.Append = true
-  ## 只输出ERROR级别以上的日志!!!
-log4j.appender.D.Threshold = ERROR
-log4j.appender.D.layout = org.apache.log4j.PatternLayout
-log4j.appender.D.layout.ConversionPattern =%d{yyyy-MM-dd HH:mm:ss,SSS} %5p %c{1}:%L - %m%n
-  # 发送日志给邮件
-og4j.appender.MAIL=org.apache.log4j.net.SMTPAppender
-log4j.appender.MAIL.Threshold=ERROR
-log4j.appender.MAIL.BufferSize=10
-www.wuset.com ">log4j.appender.MAIL.From=1773203101@qq.com
-log4j.appender.MAIL.SMTPHost=www.wusetu.com
-log4j.appender.MAIL.Subject=Log4J Message
-www.wusetu.com ">log4j.appender.MAIL.To=1773203101@qq.com
-log4j.appender.MAIL.layout=org.apache.log4j.PatternLayout
-log4j.appender.MAIL.layout.ConversionPattern=[framework] %d - %c -%-4r [%t] %-5p %c %x - %m%n
-————————————————
-版权声明：本文为CSDN博主「ZNineSun」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/zhiyikeji/article/details/85955010
+# Sa-Token配置
+sa-token:
+  # token名称 (同时也是cookie名称)
+  token-name: satoken
+  # token有效期，单位s 默认30天, -1代表永不过期
+  timeout: 2592000
+  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+  activity-timeout: -1
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  is-share: false
+  # token风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: false

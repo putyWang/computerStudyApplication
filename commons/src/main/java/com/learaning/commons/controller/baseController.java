@@ -6,6 +6,7 @@ import com.learaning.commons.Annotion.Permission;
 import com.learaning.commons.dto.BaseDto;
 import com.learaning.commons.entity.ApiResult;
 import com.learaning.commons.entity.BaseEntity;
+import com.learaning.commons.exception.ExceptionBuilder;
 import com.learaning.commons.param.PageParam;
 import com.learaning.commons.service.BaseService;
 import com.learaning.commons.utils.CommonBeanUtil;
@@ -120,6 +121,20 @@ public abstract class baseController<T extends BaseEntity, D extends BaseDto>
         return ApiResult.ok();
     }
 
+    @PostMapping("/batch")
+    @ApiOperation(value = "批量新增数据", notes = "批量新增数据")
+    @Permission(value = "insert", notes = "新增数据")
+    public ApiResult insertBatch(@RequestBody @Validated List<D> list) {
+        if (CollectionUtils.isEmpty(list)) {
+            throw ExceptionBuilder.build("参数为空");
+        }
+
+        T entity = this.getEntity();
+        List entities = CommonBeanUtil.copyList(list, entity.getClass());
+
+        return ApiResult.ok(getService().insertBatch(entities));
+    }
+
     /**
      * 更新数据
      * @param dto
@@ -131,7 +146,7 @@ public abstract class baseController<T extends BaseEntity, D extends BaseDto>
     public ApiResult update(@RequestBody @Validated D dto) {
         T entity = getEntity();
         CommonBeanUtil.copyAndFormat(entity, dto);
-        getService().updateById(entity);
+        getService().update(entity);
 
         return ApiResult.ok();
     }
@@ -145,7 +160,7 @@ public abstract class baseController<T extends BaseEntity, D extends BaseDto>
     @ApiOperation(value = "根据id删除数据", notes = "根据id删除数据")
     @Permission(value = "delete", notes = "删除数据")
     public ApiResult deleteById(@PathVariable long id) {
-        getService().removeById(id);
+        getService().delete(id);
 
         return ApiResult.ok();
     }
@@ -159,7 +174,7 @@ public abstract class baseController<T extends BaseEntity, D extends BaseDto>
     @ApiOperation(value = "批量删除", notes = "批量删除")
     @Permission(value = "delete", notes = "批量删除数据")
     public ApiResult deleteBatch(@ApiParam(value = "id数组", required = true) List<Serializable> ids) {
-        getService().removeByIds(ids);
+        getService().deleteBatch(ids);
 
         return ApiResult.ok();
     }

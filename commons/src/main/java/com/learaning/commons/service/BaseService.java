@@ -44,36 +44,8 @@ BaseService<D extends BaseDto, T extends BaseEntity>
      */
     default IPage<T> page(PageParam page, Wrapper<T> queryWrapper) {
 
-        Page<T> iPage = new Page<>();
-        iPage.setCurrent(page.getCurrent());
-        iPage.setSize(page.getPageSize());
-
-        //当分页中需要排序时
-        if (page instanceof SortPageParam) {
-            SortPageParam sortPage = (SortPageParam) page;
-            List<String> sorts = sortPage.getSorts();
-            List<String> acSs = sortPage.getACSs();
-
-            if (CollectionUtils.isNotEmpty(sorts)) {
-                OrderItem[] orderItems = new OrderItem[sorts.size()];
-                //设置排序规则
-                if (CollectionUtils.isEmpty(acSs)) {
-                    for (int i = 0; i < sorts.size(); i++) {
-                        orderItems[i] = build(sorts.get(i), "ASC");
-                    }
-                }else if (acSs.size() < sorts.size()) {
-                    for (int i = 0; i < sorts.size(); i++) {
-                        orderItems[i] = build(sorts.get(i), acSs.get(0));
-                    }
-                }else {
-                    for (int i = 0; i < sorts.size(); i++) {
-                        orderItems[i] = build(sorts.get(i), acSs.get(i));
-                    }
-                }
-
-                iPage.addOrder(orderItems);
-            }
-        }
+        //将PageParam转化为IPage
+        IPage<T> iPage = getPage(page);
 
         //当设置了查询条件时直接查询
         if (queryWrapper != null) {
@@ -364,7 +336,7 @@ BaseService<D extends BaseDto, T extends BaseEntity>
 
             while(true) {
                 Map.Entry entry;
-                Integer result;
+                Long result;
                 do {
                     if (!iterator.hasNext()) {
                         return;
@@ -499,6 +471,46 @@ BaseService<D extends BaseDto, T extends BaseEntity>
         return queryWrapper;
     }
 
+    /**
+     * 根据PageParam获取page
+     * @param page
+     * @return
+     */
+    default IPage<T> getPage(PageParam page) {
+
+        Page<T> iPage = new Page<>();
+        iPage.setCurrent(page.getCurrent());
+        iPage.setSize(page.getPageSize());
+
+        //当分页中需要排序时
+        if (page instanceof SortPageParam) {
+            SortPageParam sortPage = (SortPageParam) page;
+            List<String> sorts = sortPage.getSorts();
+            List<String> acSs = sortPage.getACSs();
+
+            if (CollectionUtils.isNotEmpty(sorts)) {
+                OrderItem[] orderItems = new OrderItem[sorts.size()];
+                //设置排序规则
+                if (CollectionUtils.isEmpty(acSs)) {
+                    for (int i = 0; i < sorts.size(); i++) {
+                        orderItems[i] = build(sorts.get(i), "ASC");
+                    }
+                }else if (acSs.size() < sorts.size()) {
+                    for (int i = 0; i < sorts.size(); i++) {
+                        orderItems[i] = build(sorts.get(i), acSs.get(0));
+                    }
+                }else {
+                    for (int i = 0; i < sorts.size(); i++) {
+                        orderItems[i] = build(sorts.get(i), acSs.get(i));
+                    }
+                }
+
+                iPage.addOrder(orderItems);
+            }
+        }
+
+        return iPage;
+    }
     /**
      * 建立
      * @param sort
