@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.6</version>
+        <version>2.5.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.learaning</groupId>
@@ -20,6 +20,9 @@
         <guava.version>21.0</guava.version>
         <fastjson.version>1.2.75</fastjson.version>
         <swagger-annotations.version>1.5.20</swagger-annotations.version>
+        <shiro-spring-boot-starter>1.8.0</shiro-spring-boot-starter>
+        <springfox-boot-starter>3.0.0</springfox-boot-starter>
+        <knife4j-spring-boot-starter>3.0.2</knife4j-spring-boot-starter>
     </properties>
     <dependencies>
         <dependency>
@@ -44,18 +47,21 @@
             </exclusions>
         </dependency>
 
-        <!-- Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ -->
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot-starter</artifactId>
-            <version>${sa-token-spring-boot-starter.version}</version>
-        </dependency>
-
         <!-- mybatis-plus  -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis-plus-boot-starter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>3.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- 通过工具类  -->
@@ -86,11 +92,18 @@
             <version>${fastjson.version}</version>
         </dependency>
 
-        <!-- Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ -->
+<!--        &lt;!&ndash; Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>cn.dev33</groupId>-->
+<!--            <artifactId>sa-token-spring-boot-starter</artifactId>-->
+<!--            <version>${sa-token-spring-boot-starter.version}</version>-->
+<!--        </dependency>-->
+        <!--引入shrio-->
         <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot-starter</artifactId>
-            <version>1.29.0</version>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring-boot-starter</artifactId>
+<!--            <version>1.8.0</version>-->
+            <version>${shiro-spring-boot-starter}</version>
         </dependency>
 
         <dependency>
@@ -98,6 +111,30 @@
             <artifactId>swagger-annotations</artifactId>
             <version>${swagger-annotations.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>${springfox-boot-starter}</version>
+        </dependency>
+        <!-- springfox swagger3.x 整合Knife4j -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>${knife4j-spring-boot-starter}</version>
+            <!-- 排除一些与swagger冲突的包 -->
+            <exclusions>
+                <exclusion>
+                    <artifactId>swagger-annotations</artifactId>
+                    <groupId>io.swagger</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>swagger-models</artifactId>
+                    <groupId>io.swagger</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!--JSR303数据校验依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
