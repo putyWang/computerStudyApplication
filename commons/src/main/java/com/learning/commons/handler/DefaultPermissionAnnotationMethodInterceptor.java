@@ -25,22 +25,20 @@ public class DefaultPermissionAnnotationMethodInterceptor
         super(new DefaultPermissionAnnotationHandler());
     }
 
+    /**
+     * 权限验证方法
+     * @param mi
+     * @throws AuthorizationException
+     */
     public void assertAuthorized(MethodInvocation mi)
             throws AuthorizationException {
 
+        //获取请求方法
         Method requestMethod = mi.getMethod();
         try {
             IgnoreAuth ignoreAuth = requestMethod.getAnnotation(IgnoreAuth.class);
-            //忽略登录则直接返回
-            if (! ObjectUtils.isEmpty(ignoreAuth) && ignoreAuth.ignoreLogin()) {
-                    return;
-            }
 
-            //用户未登录则直接跳转登录页面
-            if (! getSubject().isAuthenticated())
-                throw NotLoginException.newInstance("未登录","0");
-
-            //ignoreAuth为真时 忽略权限验证
+            //ignoreAuth为真时 该方法不需要权限验证
             if (! ObjectUtils.isEmpty(ignoreAuth) && ignoreAuth.ignoreAuth()) {
                 return;
             }

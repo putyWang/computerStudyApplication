@@ -1,9 +1,9 @@
 package com.learning.commons.config;
 
 import com.learning.commons.handler.DefaultAuthorizationAttributeSourceAdvisor;
+import com.learning.commons.module.realm.JwtRealm;
 import com.learning.commons.utils.CollectionUtils;
 import com.learning.commons.utils.StringUtils;
-import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -19,7 +19,7 @@ public class ShiroConfig {
 
     //自动注入自定义权限对象
     @Resource
-    private AuthorizingRealm realm;
+    private JwtRealm realm;
 
     @Resource
     private ShiroProperties shiroProperties;

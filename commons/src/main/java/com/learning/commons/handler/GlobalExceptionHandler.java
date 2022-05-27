@@ -5,7 +5,7 @@ import com.learning.commons.bean.RequestDetail;
 import com.learning.commons.entity.ApiResult;
 import com.learning.commons.enums.ApiCode;
 import com.learning.commons.exception.*;
-import com.learning.commons.utils.RequestDetailThreadLocal;
+import com.learning.commons.bean.RequestDetailThreadLocal;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

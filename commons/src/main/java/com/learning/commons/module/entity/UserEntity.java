@@ -7,6 +7,8 @@ import com.learning.commons.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("user")
@@ -26,4 +28,13 @@ public class UserEntity extends BaseEntity {
      * 角色编码
      */
     private String RoleCode;
+
+    /**
+     * 表示用户状态
+     * 1为正常
+     * 0为以禁用
+     */
+    private Integer status;
+
+    private List<String> permission;
 }

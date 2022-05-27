@@ -13,11 +13,19 @@ import java.util.Date;
  */
 public class JwtUtils {
 
-    public static String createToken(String username, String password, String secret)
+    /**
+     * 创建JwtToken    * @param username
+     * @param password
+     * @param secret 设置HMAC256加密密钥
+     * @param second 设置Token过期时间
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    public static String createToken(String username, String password, String secret, Integer second)
             throws UnsupportedEncodingException {
         //设置token时间 三小时
         Calendar nowTime = Calendar.getInstance();
-        nowTime.add(Calendar.HOUR, 3);
+        nowTime.add(Calendar.HOUR, second);
         Date date = nowTime.getTime();
 
 

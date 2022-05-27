@@ -1,4 +1,4 @@
-package com.learning.commons.utils;
+package com.learning.commons.bean;
 
 import com.learning.commons.bean.RequestDetail;
 

@@ -11,10 +11,4 @@ public @interface IgnoreAuth {
      * @return
      */
     boolean ignoreAuth() default true;
-
-    /**
-     * 不需登录权限
-     * @return
-     */
-    boolean ignoreLogin() default true;
 }
