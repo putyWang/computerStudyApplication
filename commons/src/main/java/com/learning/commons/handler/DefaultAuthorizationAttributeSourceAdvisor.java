@@ -1,5 +1,6 @@
 package com.learning.commons.handler;
 
+import com.learning.commons.Annotion.IgnoreAuth;
 import com.learning.commons.Annotion.Model;
 import com.learning.commons.Annotion.Permission;
 import org.apache.shiro.authz.annotation.*;
@@ -19,7 +20,7 @@ public class DefaultAuthorizationAttributeSourceAdvisor
      * 注入自定义权限注解
      */
     private static final Class<? extends Annotation>[] AUTHZ_ANNOTATION_CLASSES = new Class[]{
-                Permission.class, Model.class,
+                IgnoreAuth.class, Permission.class, Model.class,
                 RequiresPermissions.class, RequiresRoles.class,
                 RequiresUser.class, RequiresGuest.class, RequiresAuthentication.class
         };

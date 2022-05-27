@@ -172,7 +172,7 @@ public abstract class BaseController<T extends BaseEntity, D extends BaseDto>
      */
     @DeleteMapping("/delete/batch")
     @ApiOperation(value = "批量删除", notes = "批量删除")
-    @Permission(value = "delete", notes = "批量删除数据")
+    @Permission(value = "delete", notes = "删除数据")
     public ApiResult deleteBatch(@ApiParam(value = "id数组", required = true) List<Serializable> ids) {
         getService().deleteBatch(ids);
 

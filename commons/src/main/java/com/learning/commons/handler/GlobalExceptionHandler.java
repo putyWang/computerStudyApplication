@@ -142,28 +142,28 @@ public class GlobalExceptionHandler {
      * @param nle
      * @return
      */
-//    @ExceptionHandler({NotLoginException.class})
-//    public ApiResult<String> notLoginExceptionHandler(NotLoginException nle) {
-//        nle.printStackTrace();
-//        String message = "";
-//        if (nle.getType().equals("-1")) {
-//            message = "未提供token";
-//        } else if (nle.getType().equals("-2")) {
-//            message = "token无效";
-//        } else if (nle.getType().equals("-3")) {
-//            message = "token已过期";
-//        } else if (nle.getType().equals("-4")) {
-//            message = "token已被顶下线";
-//        } else if (nle.getType().equals("-5")) {
-//            message = "token已被踢下线";
-//        } else {
-//            message = "当前会话未登录";
-//        }
-//
-//        printApiCodeException(ApiCode.LOGIN_EXCEPTION, nle);
-//        return ApiResult.fail(ApiCode.LOGIN_NOT.getCode(), message + "," + nle.getLoginType());
-//    }
-//
+    @ExceptionHandler({NotLoginException.class})
+    public ApiResult<String> notLoginExceptionHandler(NotLoginException nle) {
+        nle.printStackTrace();
+        String message = "";
+        if (nle.getType().equals("-1")) {
+            message = "未提供token";
+        } else if (nle.getType().equals("-2")) {
+            message = "token无效";
+        } else if (nle.getType().equals("-3")) {
+            message = "token已过期";
+        } else if (nle.getType().equals("-4")) {
+            message = "token已被顶下线";
+        } else if (nle.getType().equals("-5")) {
+            message = "token已被踢下线";
+        } else {
+            message = "当前会话未登录";
+        }
+
+        printApiCodeException(ApiCode.LOGIN_EXCEPTION, nle);
+        return ApiResult.fail(ApiCode.LOGIN_NOT.getCode(), message);
+    }
+
     /**
      * 权限验证异常处理器
      * @param exception
