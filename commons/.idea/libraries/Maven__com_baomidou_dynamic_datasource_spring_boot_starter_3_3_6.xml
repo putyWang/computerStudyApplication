@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.baomidou:dynamic-datasource-spring-boot-starter:3.3.6">
+    <CLASSES>
+      <root url="jar://D:/repo/com/baomidou/dynamic-datasource-spring-boot-starter/3.3.6/dynamic-datasource-spring-boot-starter-3.3.6.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://D:/repo/com/baomidou/dynamic-datasource-spring-boot-starter/3.3.6/dynamic-datasource-spring-boot-starter-3.3.6-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://D:/repo/com/baomidou/dynamic-datasource-spring-boot-starter/3.3.6/dynamic-datasource-spring-boot-starter-3.3.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
