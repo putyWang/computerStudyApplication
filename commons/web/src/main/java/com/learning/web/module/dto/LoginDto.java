@@ -10,11 +10,11 @@ import javax.validation.constraints.NotEmpty;
 @ApiModel(value = "登录接收类", description = "登录接收类")
 public class LoginDto {
 
-    @ApiModelProperty(name = "用户名", notes = "用户名", required = true)
-    @NotEmpty
+    @ApiModelProperty(value = "用户名", notes = "用户名", required = true)
+    @NotEmpty(message = "用户名不能为空")
     private String username;
 
-    @ApiModelProperty(name = "密码", notes = "密码", required = true)
-    @NotEmpty
+    @ApiModelProperty(value = "密码", notes = "密码", required = true)
+    @NotEmpty(message = "密码不能为空")
     private String password;
 }

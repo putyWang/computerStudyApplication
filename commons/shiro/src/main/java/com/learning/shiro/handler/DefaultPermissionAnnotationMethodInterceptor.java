@@ -1,9 +1,7 @@
 package com.learning.shiro.handler;
 
-import com.learning.core.annotion.IgnoreAuth;
-import com.learning.core.annotion.Model;
-import com.learning.core.annotion.Permission;
 import com.learning.core.utils.ObjectUtils;
+import com.learning.shiro.annotion.*;
 import org.apache.shiro.aop.MethodInvocation;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.aop.AuthorizingAnnotationMethodInterceptor;

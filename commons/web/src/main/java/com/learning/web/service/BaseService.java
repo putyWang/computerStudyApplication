@@ -17,7 +17,7 @@ import com.learning.web.dto.BaseDto;
 import com.learning.web.entity.BaseEntity;
 import com.learning.core.enums.ApiCode;
 import com.learning.core.enums.BaseOperationEnum;
-import com.learning.core.exception.ExceptionBuilder;
+import com.learning.exception.exception.ExceptionBuilder;
 import com.learning.web.param.PageParam;
 import com.learning.web.param.SortPageParam;
 import com.learning.core.utils.CollectionUtils;

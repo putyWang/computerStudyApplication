@@ -4,11 +4,11 @@ import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import com.learning.core.annotion.AccessKey;
 import com.learning.core.annotion.ApiVersion;
-import com.learning.core.annotion.IgnoreAuth;
 import com.learning.core.utils.ArrayUtils;
 import com.learning.core.utils.CollectionUtils;
 import com.learning.core.utils.DynamicEnumUtil;
 import com.learning.core.utils.ListUtils;
+import com.learning.shiro.annotion.IgnoreAuth;
 import io.swagger.annotations.Api;
 import io.swagger.models.auth.In;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +58,8 @@ import java.util.stream.StreamSupport;
         value = {"knife4j.enable"},
         matchIfMissing = true
 )
-public class Swagger3Config extends DocumentationPluginsManager {
+public class Swagger3Config
+        extends DocumentationPluginsManager {
     private static final Logger log = LoggerFactory.getLogger(Swagger3Config.class);
     @Value("${spring.application.name: Default}")
     private String applicationName;

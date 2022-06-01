@@ -1,19 +1,16 @@
 package com.learning.shiro.bean;
 
-import com.learning.web.module.entity.UserEntity;
 import lombok.Data;
 import org.apache.shiro.authc.AuthenticationToken;
 
 @Data
 public class JwtToken  implements AuthenticationToken {
 
-    private UserEntity principal;
-
     private String token;
 
     @Override
-    public UserEntity getPrincipal() {
-        return principal;
+    public Object getPrincipal() {
+        return token;
     }
 
     @Override
@@ -21,10 +18,7 @@ public class JwtToken  implements AuthenticationToken {
         return token;
     }
 
-    public static JwtToken build (UserEntity principal, String token) {
-        JwtToken jwtToken = new JwtToken();
-        jwtToken.setPrincipal(principal);
-        jwtToken.setToken(token);
-        return jwtToken;
+    public JwtToken(String token) {
+        this.token = token;
     }
 }

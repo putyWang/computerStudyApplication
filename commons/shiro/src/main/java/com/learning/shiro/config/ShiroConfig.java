@@ -3,6 +3,7 @@ package com.learning.shiro.config;
 import com.learning.shiro.bean.JwtRealm;
 import com.learning.core.utils.CollectionUtils;
 import com.learning.core.utils.StringUtils;
+import com.learning.shiro.handler.DefaultAuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -73,7 +74,7 @@ public class ShiroConfig {
         if (shiroProperties != null) {
             String authorizedUrl = shiroProperties.getAuthorizedUrl();
 
-            if (! StringUtils.isBlank(authorizedUrl)) {
+            if (!StringUtils.isBlank(authorizedUrl)) {
 
                 if (authorizedUrl.endsWith(",")) {
                     authorizedUrl = authorizedUrl.substring(0, authorizedUrl.length() - 2);
@@ -90,7 +91,7 @@ public class ShiroConfig {
 
             String anonUrl = shiroProperties.getAnonUrl();
 
-            if (! StringUtils.isBlank(anonUrl)) {
+            if (!StringUtils.isBlank(anonUrl)) {
 
                 if (anonUrl.endsWith(",")) {
                     anonUrl = anonUrl.substring(0, anonUrl.length() - 2);

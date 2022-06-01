@@ -1,6 +1,6 @@
 package com.learning.shiro.handler;
 
-import com.learning.core.annotion.Permission;
+import com.learning.shiro.annotion.Permission;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
 

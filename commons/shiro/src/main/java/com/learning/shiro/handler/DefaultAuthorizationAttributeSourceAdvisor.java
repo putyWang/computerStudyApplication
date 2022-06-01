@@ -1,8 +1,7 @@
 package com.learning.shiro.handler;
 
-import com.learning.core.annotion.IgnoreAuth;
-import com.learning.core.annotion.Model;
-import com.learning.core.annotion.Permission;
+import com.learning.core.utils.ObjectUtils;
+import com.learning.shiro.annotion.*;
 import org.apache.shiro.authz.annotation.*;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -43,7 +42,7 @@ public class DefaultAuthorizationAttributeSourceAdvisor
             return true;
         }
 
-        if (targetClass != null) {
+        if (ObjectUtils.isEmpty(targetClass)) {
             try {
                 m = targetClass.getMethod(m.getName(), m.getParameterTypes());
                 return isAuthzAnnotationPresent(m) || isAuthzAnnotationPresent(targetClass);

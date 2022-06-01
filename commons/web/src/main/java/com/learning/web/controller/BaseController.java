@@ -2,11 +2,11 @@ package com.learning.web.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.learning.core.annotion.Permission;
+import com.learning.shiro.annotion.Permission;
 import com.learning.web.dto.BaseDto;
 import com.learning.core.bean.ApiResult;
 import com.learning.web.entity.BaseEntity;
-import com.learning.core.exception.ExceptionBuilder;
+import com.learning.exception.exception.ExceptionBuilder;
 import com.learning.web.param.PageParam;
 import com.learning.web.service.BaseService;
 import com.learning.core.utils.CommonBeanUtil;

@@ -1,11 +1,11 @@
 package com.learning.shiro.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.learning.core.bean.JwtToken;
-import com.learning.web.entity.ApiResult;
+import com.learning.core.bean.ApiResult;
 import com.learning.core.enums.ApiCode;
-import com.learning.core.utils.JwtUtils;
 import com.learning.core.utils.StringUtils;
+import com.learning.shiro.bean.JwtToken;
+import com.learning.shiro.contants.JwtConstants;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,27 +40,12 @@ public class JwtAuthFilter
             throws Exception {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         // 先从Header里面获取
-        String token = httpRequest.getHeader(TOKEN);
-        if(org.apache.commons.lang3.StringUtils.isEmpty(token)){
-            // 获取不到再从Parameter中拿
-            token = httpRequest.getParameter(TOKEN);
-            // 还是获取不到再从Cookie中拿
-            if(StringUtils.isEmpty(token)){
-                Cookie[] cookies = httpRequest.getCookies();
-                if(cookies != null){
-                    for (Cookie cookie : cookies) {
-                        if(TOKEN.equals(cookie.getName())){
-                            token = cookie.getValue();
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+        String token = httpRequest.getHeader(JwtConstants.ACESS_TOKEN);
 
         //对token进行验证
-        if (token != null && JwtUtils.verify(token, secret))
-            return JwtToken.build(null, token);
+        if (! StringUtils.isEmpty(token))
+            return new JwtToken( token);
+
         return  null;
     }
 

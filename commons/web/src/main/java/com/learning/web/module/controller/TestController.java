@@ -1,6 +1,6 @@
 package com.learning.web.module.controller;
 
-import com.learning.core.annotion.Model;
+import com.learning.shiro.annotion.Model;
 import com.learning.web.controller.BaseController;
 import com.learning.web.module.dto.TestDto;
 import com.learning.web.module.entity.TestEntity;

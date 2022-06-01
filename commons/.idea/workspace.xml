@@ -5,117 +5,113 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f18ecc4c-4f9b-406d-83bd-152ff4fcfbfa" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/../.idea/learning.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__io_jsonwebtoken_jjwt_0_7_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/contants/JwtConstants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/src/main/resources/mapper/EsPropertyMetaMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/commons.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/commons.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_2_11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__ch_qos_logback_logback_core_1_2_11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_auth0_java_jwt_3_10_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_13_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_13_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_13_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_dataformat_jackson_dataformat_yaml_2_13_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_jdk8_2_13_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_jsr310_2_13_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_parameter_names_2_13_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_15.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__mysql_mysql_connector_java_8_0_29.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_12_10.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_api_2_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_core_2_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_jul_2_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_slf4j_impl_2_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_to_slf4j_2_17_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_tomcat_embed_tomcat_embed_core_9_0_63.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_tomcat_embed_tomcat_embed_el_9_0_63.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_tomcat_embed_tomcat_embed_websocket_9_0_63.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_flywaydb_flyway_core_8_5_11.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_hibernate_validator_hibernate_validator_6_2_3_Final.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_jboss_logging_jboss_logging_3_4_3_Final.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_projectlombok_lombok_1_18_24.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_jul_to_slf4j_1_7_36.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_36.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_autoconfigure_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_aop_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_jdbc_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_json_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_log4j2_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_logging_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_tomcat_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_validation_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_web_2_7_0.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_aop_5_3_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_beans_5_3_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_context_5_3_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_core_5_3_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_expression_5_3_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_jcl_5_3_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_jdbc_5_3_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_tx_5_3_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_web_5_3_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_webmvc_5_3_20.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_yaml_snakeyaml_1_30.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/core/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/CommonsApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/enums/ApiCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/com/learning/core/enums/ApiCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/exception/BaseException.java" beforeDir="false" afterPath="$PROJECT_DIR$/exception/src/main/java/com/learning/exception/exception/BaseException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/exception/DaoException.java" beforeDir="false" afterPath="$PROJECT_DIR$/exception/src/main/java/com/learning/exception/exception/DaoException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/exception/ElasticException.java" beforeDir="false" afterPath="$PROJECT_DIR$/exception/src/main/java/com/learning/exception/exception/ElasticException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/exception/ExceptionBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/exception/src/main/java/com/learning/exception/exception/ExceptionBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/exception/JWTDecodeException.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/exception/JWTDecodeException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/exception/JWTVerificationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/exception/JWTVerificationException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/exception/NotLoginException.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/exception/NotLoginException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/exception/SysLoginException.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/exception/SysLoginException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/exception/UnauthorizedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/exception/UnauthorizedException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/exception/VerificationCodeException.java" beforeDir="false" afterPath="$PROJECT_DIR$/exception/src/main/java/com/learning/exception/exception/VerificationCodeException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/com/learning/core/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/exception/src/main/java/com/learning/exception/handler/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/resources/db.migration/V1.0.0__init_db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/resources/db/migration/V1.0.0__init_db.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/resources/db.migration/V1.0.1__create_tables.sql" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/resources/db/migration/V1.0.1__create_tables.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/resources/db.migration/V1.0.2__add_record_data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/resources/db/migration/V1.0.2__add_record_data.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/resources/rebel.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/AccessKey.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/ApiVersion.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/DtoSkip.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/Formatter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/FormatterType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/IgnoreAuth.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/Model.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/Permission.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/Query.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/UnionUnique.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/UnionUniqueCode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/UnionUniqueCodes.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/Annotion/Unique.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/CommonsApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/bean/JwtToken.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/bean/KeyValue.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/bean/RequestDetail.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/bean/RequestDetailThreadLocal.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/cache/CacheHelper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/cache/DefaultCacheHelper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/config/DatabaseInitializer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/config/MybatisPlusConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/config/ShiroConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/config/ShiroProperties.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/config/Swagger3Config.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/config/SwaggerPluginRegistry.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/config/SwaggerProperties.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/config/springConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/constants/AsciiStrCache.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/controller/BaseController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/controller/Controller.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/dto/AccessListDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/dto/BaseDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/entity/ApiResult.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/entity/BaseEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/enums/ApiCode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/enums/BaseOperationEnum.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/enums/CodeInfoEnum.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/enums/Enabled.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/enums/EnumInterface.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/enums/FormatterEnum.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/enums/QueryEnum.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/BaseException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/DaoException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/ElasticException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/ExceptionBuilder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/JWTDecodeException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/JWTVerificationException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/NotLoginException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/SpringBootException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/SysLoginException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/UnauthorizedException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/exception/VerificationCodeException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/filter/JwtAuthFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/handler/DefaultAuthorizationAttributeSourceAdvisor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/handler/DefaultPermissionAnnotationAopInterceptor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/handler/DefaultPermissionAnnotationHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/handler/DefaultPermissionAnnotationMethodInterceptor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/handler/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/holder/UserContentHolder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/holder/UserContext.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/controller/SsoController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/controller/TestController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/dao/TestMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/dao/UserMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/dto/LoginDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/dto/RoleDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/dto/TestDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/dto/UserDto.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/entity/AuthenticationEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/entity/RoleEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/entity/TestEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/entity/UserEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/realm/JwtRealm.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/service/TestService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/service/UserService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/service/impl/TestServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/module/service/impl/UserServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/param/PageParam.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/param/SortPageParam.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/service/BaseService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/service/SsoService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/service/impl/SsoServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/ArrayUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/CharacterUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/CollectionUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/CommonBeanUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/CommonUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/DynamicEnumUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/JwtUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/ListUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/MD5Utils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/ObjectUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/ReflectionUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/SpringContextUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/StringUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/learning/commons/utils/Validate.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db.migration/V1.0.0__init_db.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db.migration/V1.0.1__create_tables.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db.migration/V1.0.2__add_record_data.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/log4j2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/rebel.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/learning/commons/CommonsApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/ShiroApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/bean/JwtRealm.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/bean/JwtRealm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/bean/JwtToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/bean/JwtToken.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/config/ShiroConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/config/ShiroConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/filter/JwtAuthFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/filter/JwtAuthFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/handler/DefaultAuthorizationAttributeSourceAdvisor.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/handler/DefaultAuthorizationAttributeSourceAdvisor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/handler/DefaultPermissionAnnotationHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/handler/DefaultPermissionAnnotationHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/handler/DefaultPermissionAnnotationMethodInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/handler/DefaultPermissionAnnotationMethodInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/utils/JwtUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/utils/JwtUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shiro/src/test/java/com/learning/shiro/ShiroApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/shiro/src/test/java/com/learning/shiro/ShiroApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/src/main/java/com/learning/swagger/WebApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/src/main/java/com/learning/swagger/config/Swagger3Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/src/main/java/com/learning/swagger/config/Swagger3Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/src/test/java/com/learning/swagger/WebApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/src/test/java/com/learning/swagger/WebApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/web/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/learning/web/WebApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/learning/web/WebApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/learning/web/controller/BaseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/learning/web/controller/BaseController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/controller/SsoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/controller/SsoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/controller/TestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/controller/TestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/dao/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/dao/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/dto/LoginDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/dto/LoginDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/dto/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/dto/UserDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/learning/web/module/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/java/com/learning/web/service/BaseService.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/main/java/com/learning/web/service/BaseService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/src/test/java/com/learning/web/WebApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/test/java/com/learning/web/WebApplicationTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,8 +127,9 @@
         <option value="spring-beans.schema" />
         <option value="Enum" />
         <option value="AnnotationType" />
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
+        <option value="FxmlFile" />
       </list>
     </option>
   </component>
@@ -179,11 +176,12 @@
     <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="jdk.selected.JAVA_MODULE" value="1.8" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Problems" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/web/src/main/resources/mapper" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="build.tools" />
@@ -199,22 +197,27 @@
       <recent name="com.learaning.commons.modules.test.service.impl" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\wangwei\Desktop\work\learning\commons\web\src\main\resources\mapper" />
       <recent name="C:\Users\wangwei\Desktop\work\learning\commons" />
       <recent name="C:\Users\wangwei\Desktop\work\learning\commons\src\main\java\com\learning\commons\module\dto" />
       <recent name="C:\Users\wangwei\Desktop\work\learning\commons\src\main\resources\db.migration" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\wangwei\Desktop\work\learning\commons\web\src\main\resources\db\migration" />
+      <recent name="C:\Users\wangwei\Desktop\work\learning\commons\web\src\main\resources" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.learning.exception" />
       <recent name="com.learning.web" />
       <recent name="com.learaning.shiro" />
       <recent name="" />
       <recent name="com.learaning.commons" />
-      <recent name="com.learaning.demo" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.learning.commons.module.dto" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.CommonsApplication (1)">
+  <component name="RunManager" selected="Spring Boot.WebApplication (1)">
     <configuration name="LearnUtils" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.learaning.demo.utils.LearnUtils" />
       <module name="core" />
@@ -241,13 +244,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CommonsApplication (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="core" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.learning.core.CommonsApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -268,6 +280,20 @@
         </pattern>
       </extension>
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.learning.core.CommonsApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExcepctionApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="excepction" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.learning.excepction.ExcepctionApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExceptionApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="exception" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.learning.exception.ExceptionApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -302,7 +328,6 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Spring Boot.CommonsApplication (1)" />
         <item itemvalue="Application.MD5Utils" />
         <item itemvalue="Application.LearnUtils" />
       </list>
@@ -353,7 +378,10 @@
       <workItem from="1653877141775" duration="57000" />
       <workItem from="1653877320165" duration="1540000" />
       <workItem from="1653878898677" duration="1281000" />
-      <workItem from="1653880249554" duration="1227000" />
+      <workItem from="1653880249554" duration="7785000" />
+      <workItem from="1653958632995" duration="16280000" />
+      <workItem from="1653988949131" duration="2118000" />
+      <workItem from="1654046811741" duration="16423000" />
     </task>
     <task id="LOCAL-00001" summary="增加controller基础类逻辑">
       <created>1651194668249</created>
@@ -383,6 +411,32 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="增加controller基础类逻辑" />
     <option name="LAST_COMMIT_MESSAGE" value="增加controller基础类逻辑" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/web/src/main/java/com/learning/web/module/controller/SsoController.java</url>
+          <line>61</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/bean/JwtRealm.java</url>
+          <line>51</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/bean/JwtRealm.java</url>
+          <line>56</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/shiro/src/main/java/com/learning/shiro/bean/JwtRealm.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

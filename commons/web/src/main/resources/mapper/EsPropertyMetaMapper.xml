@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learning.web.module.dao.UserMapper">
+    <resultMap id="UserDto" type="com.learning.web.module.dto.UserDto">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="roleCode" column="role_code"/>
+        <result property="status" column="status"/>
+        <collection property="permissions" ofType="String">
+            <result column="permission"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectByUsername" resultMap="UserDto">
+        select
+            u.id, u.status, u.username, u.password, u.role_code as roleCode, CONCAT(ap.permission_code ,'_' , ac.permission_code) as permission
+        from
+            user as u
+        join
+            auth_role as ar
+        on
+            ar.role_code = u.role_code
+        join
+            authentication as ac
+        on
+            ac.id = ar.auth_id
+        join
+            authentication as ap
+        on
+            ap.id = ac.pid
+        where
+            u.username = #{usename}
+    </select>
+
+</mapper>

@@ -1,9 +1,11 @@
 package com.learning.shiro.bean;
 
 import com.google.common.collect.Sets;
-import com.learning.core.bean.JwtToken;
-import com.learning.web.module.entity.UserEntity;
-import com.learning.web.module.service.UserService;
+import com.learning.core.utils.CollectionUtils;
+import com.learning.core.utils.ObjectUtils;
+import com.learning.shiro.contants.JwtConstants;
+import com.learning.shiro.exception.NotLoginException;
+import com.learning.shiro.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -12,20 +14,24 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.util.SimpleByteSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
+import static com.learning.shiro.exception.NotLoginException.*;
 
 @Slf4j
 @Component
 public class JwtRealm
         extends AuthorizingRealm {
 
-    @Autowired
-    private UserService userService;
+    @Resource
+    private JwtUtils jwtUtils;
 
     //表示此Realm只支持JwtToken类型
     @Override
@@ -38,17 +44,30 @@ public class JwtRealm
      * */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-
         // 根据用户名查找角色，请根据需求实现
-        UserEntity user = (UserEntity)principalCollection.getPrimaryPrincipal();
-
+        String token = (String)principalCollection.getPrimaryPrincipal();
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+        Map<String, Object> claim = jwtUtils.getClaim(token);
+
+        if (CollectionUtils.isEmpty(claim)) {
+            throw NotLoginException.newInstance(INVALID_TOKEN, INVALID_TOKEN, token);
+        }
 
         // 添加相关用户角色
-        authorizationInfo.setRoles(Sets.newHashSet(user.getRoleCode()));
+        Object role = claim.get(JwtConstants.ROLE_NAME);
+
+        if (role instanceof String && ! ObjectUtils.isEmpty(role))
+            authorizationInfo.setRoles(Sets.newHashSet((String)role));
+        else
+            throw new AuthenticationException("角色添加有误");
 
         // 添加相关用户权限
-        authorizationInfo.setStringPermissions(Sets.newHashSet(user.getPermission()));
+        Object permission = claim.get(JwtConstants.PERMISSION_NAME);
+
+        if (permission instanceof List && ObjectUtils.isEmpty(permission))
+            authorizationInfo.setStringPermissions(Sets.newHashSet((List<String>)permission));
+        else
+            throw new AuthenticationException("权限添加有误");
 
         return authorizationInfo;
     }
@@ -63,24 +82,39 @@ public class JwtRealm
         // 获取token
         String token = jwtToken.getToken();
 
-        // 获取用户
-        UserEntity user = jwtToken.getPrincipal();
-
-        // 用户不存在
-        if (user == null) {
-            throw new UnknownAccountException();
+        if (ObjectUtils.isEmpty(token)) {
+            throw NotLoginException.newInstance(NOT_TOKEN, NOT_TOKEN);
         }
+
+        Map<String, Object> claim = jwtUtils.getClaim(token);
+
+        if (CollectionUtils.isEmpty(claim)) {
+            throw NotLoginException.newInstance(INVALID_TOKEN, INVALID_TOKEN, token);
+        }
+
+        Object username = claim.get(JwtConstants.USER_NAME);
+
+        // 用户验证有误
+        if (ObjectUtils.isEmpty(username) || !(username instanceof String))
+            throw new UnknownAccountException("用户名有误");
+
+        Object status = claim.get(JwtConstants.USER_STATUS);
+
+        // 用户状态验证有误
+        if(! (status instanceof Integer) || ! ObjectUtils.isEmpty(status))
+            throw new UnknownAccountException("用户状态输入有误");
 
         // 用户被禁用
-        if(user.getStatus()==0){
-            throw new LockedAccountException();
+        if(status.equals(0)){
+            throw new LockedAccountException("用户已被禁用");
         }
 
+        //将相关内容保存到SimplePrincipalCollection中
         try {
             return new SimpleAuthenticationInfo(
-                    user,
+                    claim,
                     token,
-                    getName()
+                    (String)username
             );
         } catch (Exception e) {
             throw new AuthenticationException(e);
