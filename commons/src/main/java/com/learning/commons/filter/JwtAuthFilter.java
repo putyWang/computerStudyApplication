@@ -2,20 +2,18 @@ package com.learning.commons.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.learning.commons.bean.JwtToken;
+import com.learning.commons.constants.AnsConstant;
 import com.learning.commons.entity.ApiResult;
 import com.learning.commons.enums.ApiCode;
-import com.learning.commons.utils.JwtUtils;
 import com.learning.commons.utils.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,41 +28,17 @@ public class JwtAuthFilter
         extends AuthenticatingFilter {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private static final String TOKEN = "token";
-
-    /**
-     * Token密钥
-     */
-    @Value("${jwt.secret}")
-    private String secret;
-
     @Override
     protected AuthenticationToken createToken(ServletRequest servletRequest, ServletResponse servletResponse)
             throws Exception {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         // 先从Header里面获取
-        String token = httpRequest.getHeader(TOKEN);
-        if(org.apache.commons.lang3.StringUtils.isEmpty(token)){
-            // 获取不到再从Parameter中拿
-            token = httpRequest.getParameter(TOKEN);
-            // 还是获取不到再从Cookie中拿
-            if(StringUtils.isEmpty(token)){
-                Cookie[] cookies = httpRequest.getCookies();
-                if(cookies != null){
-                    for (Cookie cookie : cookies) {
-                        if(TOKEN.equals(cookie.getName())){
-                            token = cookie.getValue();
-                            break;
-                        }
-                    }
-                }
-            }
-        }
+        String token = httpRequest.getHeader(AnsConstant.ACCESS_TOKEN);
 
         //对token进行验证
-        if (token != null && JwtUtils.verify(token, secret))
-            return JwtToken.build(null, token);
-        return  null;
+        if (! StringUtils.isEmpty(token))
+            return new JwtToken(token);
+        return null;
     }
 
     /**

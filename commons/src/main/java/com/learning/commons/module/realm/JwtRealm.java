@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.learning.commons.bean.JwtToken;
 import com.learning.commons.module.entity.UserEntity;
 import com.learning.commons.module.service.UserService;
+import com.learning.commons.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -44,9 +45,11 @@ public class JwtRealm
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
 
         // 根据用户名查找角色，请根据需求实现
-        UserEntity user = (UserEntity)principalCollection.getPrimaryPrincipal();
+        String token = (String)principalCollection.getPrimaryPrincipal();
 
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+
+        JwtUtils.getClaim(token, userName);
 
         // 添加相关用户角色
         authorizationInfo.setRoles(Sets.newHashSet(user.getRoleCode()));
@@ -64,11 +67,8 @@ public class JwtRealm
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
         JwtToken jwtToken = (JwtToken) authenticationToken;
 
-        // 获取token
-        String token = jwtToken.getToken();
-
         // 获取用户
-        UserEntity user = jwtToken.getPrincipal();
+        String token = (String)jwtToken.getPrincipal();
 
         // 用户不存在
         if (user == null) {

@@ -7,13 +7,16 @@ import org.apache.shiro.authc.AuthenticationToken;
 @Data
 public class JwtToken  implements AuthenticationToken {
 
-    private UserEntity principal;
-
+    // 使用构造函数传参，重写2个Toke的返回方法，实现替换shiro默认token为jwtToken
     private String token;
 
+    public JwtToken(String token) {
+        this.token = token;
+    }
+
     @Override
-    public UserEntity getPrincipal() {
-        return principal;
+    public Object getPrincipal() {
+        return token;
     }
 
     @Override
@@ -21,10 +24,5 @@ public class JwtToken  implements AuthenticationToken {
         return token;
     }
 
-    public static JwtToken build (UserEntity principal, String token) {
-        JwtToken jwtToken = new JwtToken();
-        jwtToken.setPrincipal(principal);
-        jwtToken.setToken(token);
-        return jwtToken;
     }
 }

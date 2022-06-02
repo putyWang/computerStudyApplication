@@ -40,7 +40,7 @@ public class SsoController {
             UserEntity user = new UserEntity();
             //创建Token
             String token = JwtUtils.createToken(loginDto.getUsername(), loginDto.getPassword(), secret, 60 * 60);
-            SecurityUtils.getSubject().login(JwtToken.build(user, token));
+            SecurityUtils.getSubject().login(new JwtToken(token));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
