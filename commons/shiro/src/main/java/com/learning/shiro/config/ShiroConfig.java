@@ -7,6 +7,8 @@ import com.learning.shiro.handler.DefaultAuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +18,8 @@ import java.util.*;
 
 @Configuration
 public class ShiroConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(ShiroConfig.class);
 
     //自动注入自定义权限对象
     @Resource
@@ -41,13 +45,13 @@ public class ShiroConfig {
         //设置认证界面路径
         //表示这个资源需要认证和授权
         urlToList();
-
+        log.info("需要鉴权路径：" + shiroProperties.getAuthorizedUrl());
         if (! CollectionUtils.isEmpty(authorizedUrlList)) {
             authorizedUrlList.forEach((authorizedUrl) -> {
                 map.put(authorizedUrl, "authc");
             });
         }
-
+        log.info("不需要鉴权路径：" + shiroProperties.getAnonUrl());
         if (! CollectionUtils.isEmpty(anonUrlList)) {
             authorizedUrlList.forEach((anonUrl) -> {
                 map.put(anonUrl, "anon");

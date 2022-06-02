@@ -124,7 +124,7 @@ public abstract class BaseController<T extends BaseEntity, D extends BaseDto>
     @PostMapping("/batch")
     @ApiOperation(value = "批量新增数据", notes = "批量新增数据")
     @Permission(value = "insert", notes = "新增数据")
-    public ApiResult insertBatch(@RequestBody @Validated List<D> list) {
+    public ApiResult insertBatch(@RequestBody @Validated ArrayList<D> list) {
         if (CollectionUtils.isEmpty(list)) {
             throw ExceptionBuilder.build("参数为空");
         }
@@ -173,7 +173,7 @@ public abstract class BaseController<T extends BaseEntity, D extends BaseDto>
     @DeleteMapping("/delete/batch")
     @ApiOperation(value = "批量删除", notes = "批量删除")
     @Permission(value = "delete", notes = "删除数据")
-    public ApiResult deleteBatch(@ApiParam(value = "id数组", required = true) List<Serializable> ids) {
+    public ApiResult deleteBatch(@ApiParam(value = "id数组", required = true) ArrayList<Serializable> ids) {
         getService().deleteBatch(ids);
 
         return ApiResult.ok();

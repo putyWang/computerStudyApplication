@@ -3,6 +3,7 @@ package com.learning.web.module.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.learning.core.annotion.Unique;
 import com.learning.web.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,6 +21,7 @@ public class UserEntity extends BaseEntity {
     )
     private Long id;
 
+    @Unique
     private String username;
 
     private String password;
@@ -35,6 +37,4 @@ public class UserEntity extends BaseEntity {
      * 0为以禁用
      */
     private Integer status;
-
-    private List<String> permission;
 }

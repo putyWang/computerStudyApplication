@@ -47,7 +47,7 @@ CREATE TABLE `user`  (
    `id`        bigint(20)                                              NOT NULL AUTO_INCREMENT,
    `username`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
    `password`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-   `status`    TINYINT                                                 NOT NULL                COMMENT '用户状态，0为锁定，1为正常',
+   `status`    TINYINT                                                 DEFAULT 1               COMMENT '用户状态，0为锁定，1为正常',
    `role_code` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
    PRIMARY KEY (`id`) USING BTREE,
    UNIQUE KEY `username` (`username`) USING BTREE

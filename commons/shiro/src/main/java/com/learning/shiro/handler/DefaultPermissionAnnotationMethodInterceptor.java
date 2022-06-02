@@ -55,9 +55,9 @@ public class DefaultPermissionAnnotationMethodInterceptor
                 String base= annotation.value();
                 ((DefaultPermissionAnnotationHandler)getHandler()).assertAuthorized(base+ "_" + permission.value());
             } else
-                throw new AuthorizationException("Not authorized to invoke method: " + requestMethod);
+                throw new AuthorizationException("该用户没有该权限： " + requestMethod);
         }catch(AuthorizationException ae) {
-            if (ae.getCause() == null) ae.initCause(new AuthorizationException("Not authorized to invoke method: " + requestMethod));
+            if (ae.getCause() == null) ae.initCause(new AuthorizationException("该用户没有该权限： " + requestMethod));
             throw ae;
         }
     }

@@ -32,7 +32,7 @@ jwt:
 
 shiro:
   loginUrl: /sso/login
-  authorizedUrl: /applications/*, /**
+  authorizedUrl: /*
   anonUrl: /swagger-resources/**
   sessionManager:
     #允许将sessionId 放到 cookie 中

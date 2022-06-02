@@ -8,7 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="exception" />
+        <module name="core" />
         <module name="excepction" />
+        <module name="shiro" />
         <module name="web" />
         <module name="swagger" />
       </profile>

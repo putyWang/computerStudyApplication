@@ -8,5 +8,5 @@ import com.learning.web.service.BaseService;
 public interface UserService
         extends BaseService<UserDto, UserEntity> {
 
-    UserDto login(LoginDto login);
+    String login(LoginDto login);
 }
