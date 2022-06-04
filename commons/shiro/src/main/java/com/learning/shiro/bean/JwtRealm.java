@@ -89,6 +89,14 @@ public class JwtRealm
             throw NotLoginException.newInstance(NOT_TOKEN, NOT_TOKEN);
         }
 
+        //验证token是否过期
+        if (jwtUtils.isTokenExpired(token)) {
+            throw NotLoginException.newInstance(TOKEN_TIMEOUT, TOKEN_TIMEOUT, token);
+        }
+        // 未过期刷新Token
+        token = jwtUtils.refreshToken(token);
+
+        //获取相应的claim
         Claims claim = jwtUtils.getClaim(token);
 
         if (CollectionUtils.isEmpty(claim)) {

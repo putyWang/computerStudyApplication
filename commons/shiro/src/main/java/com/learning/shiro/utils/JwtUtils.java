@@ -37,52 +37,37 @@ public class JwtUtils {
      * @param subject   代表这个JWT的主体，即它的所有人 一般是用户id
      * @param claims  有效时间(秒)
      */
-    public String createToken(String issuer, Long subject, Claims claims)
-            throws UnsupportedEncodingException {
+    public String createToken(String issuer, Long subject, Claims claims) {
 
         Date nowDate = new Date();
         //设置token时间 以秒为单位
         Date expireDate = new Date(nowDate.getTime() + jwtProperties.getExpire() * 1000);
 
-        claims.setSubject(subject.toString());
-
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
+                .setClaims(claims)
                 .setIssuer(issuer)
                 .setSubject(subject.toString())
                 .setIssuedAt(nowDate)
                 .setExpiration(expireDate)
-                .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
                 .compact();
     }
 
     //从数据声明生成令牌
-    private String createToken(Map<String, Object> claims) {
-        Date expirationDate = new Date(System.currentTimeMillis() + jwtProperties.getExpire() * 1000);
-        return Jwts.builder()
-                //注入参数
-                .setClaims(claims)
-                //设置过期时间
-                .setExpiration(expirationDate)
-                //设置算法及密钥
-                .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
-                .compact();
+    private String createToken(Claims claims) {
+
+        return createToken(claims.getIssuer(), Long.parseLong(claims.getSubject()), claims);
     }
 
     /**
      * 通过载荷名字获取载荷的值，获取token列名
      */
     public Claims getClaim(String token) {
-        try {
-            return Jwts.parser()
-                    .setSigningKey(jwtProperties.getSecret())
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (Exception e) {
-            log.debug("validate is token error ", e);
-            return null;
-        }
+        return Jwts.parser()
+                .setSigningKey(jwtProperties.getSecret())
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     /**
@@ -91,6 +76,7 @@ public class JwtUtils {
      * @param token 带tokenHead的token
      */
     public String refreshToken(String token) {
+
         if (StringUtils.isEmpty(token)) {
             return null;
         }
@@ -111,7 +97,6 @@ public class JwtUtils {
         if (tokenRefreshJustBefore(token, 30 * 60)) {
             return token;
         } else {
-            claim.put("created", new Date());
             return createToken(claim);
         }
     }
@@ -124,7 +109,9 @@ public class JwtUtils {
      */
     private boolean tokenRefreshJustBefore(String token, int time) {
         Claims claims = getClaim(token);
-        Date created = claims.get("created", Date.class);
+        // 获取创建时间
+        Date created = DateUtil.offsetSecond(claims.getExpiration(), (int)jwtProperties.getExpire() * -1);
+
         Date refreshDate = new Date();
         //刷新时间在创建时间的指定时间内
         return refreshDate.after(created) && refreshDate.before(DateUtil.offsetSecond(created, time));

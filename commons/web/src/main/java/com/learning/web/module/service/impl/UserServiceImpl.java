@@ -56,13 +56,9 @@ public class UserServiceImpl
         claims.put(JwtConstants.PERMISSION_NAME, user.getPermissions());
         claims.put(JwtConstants.USER_STATUS, user.getStatus());
 
-        try {
-            //创建Token
-            token = jwtUtils.createToken(username, user.getId(), claims);
-            SecurityUtils.getSubject().login(new JwtToken(token));
-        } catch (UnsupportedEncodingException e) {
-            throw new UnknownAccountException("token转换有误");
-        }
+        //创建Token
+        token = jwtUtils.createToken(username, user.getId(), claims);
+        SecurityUtils.getSubject().login(new JwtToken(token));
 
         return token;
     }
