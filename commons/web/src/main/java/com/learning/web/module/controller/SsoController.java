@@ -37,6 +37,6 @@ public class SsoController {
         String password = MD5Utils.encrypt(userDto.getPassword());
         userEntity.setPassword(password);
         userService.insert(userEntity);
-        return ApiResult.ok("登录成功");
+        return ApiResult.ok("注册成功");
     }
 }

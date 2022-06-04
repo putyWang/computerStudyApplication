@@ -90,7 +90,7 @@ public class CommonBeanUtil {
         Field[] superDeclaredFields = target.getClass().getSuperclass().getDeclaredFields();
         //将超类中的属性字段加入到字段中
         fields.addAll(Arrays.asList(superDeclaredFields));
-        formatterHandler(source, target, fields);
+//        formatterHandler(source, target, fields);
 
         //为target对象所有值进行赋值
         for (Field field: formatterTypeFields) {

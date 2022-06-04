@@ -5,6 +5,7 @@ import com.learning.shiro.annotion.*;
 import org.apache.shiro.aop.MethodInvocation;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.aop.AuthorizingAnnotationMethodInterceptor;
+import org.apache.shiro.spring.security.interceptor.AopAllianceAnnotationsAuthorizingMethodInterceptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -30,6 +31,10 @@ public class DefaultPermissionAnnotationMethodInterceptor
 
         //获取请求方法
         Method requestMethod = mi.getMethod();
+
+        //获取当前访问类
+        Class<?> targetClass = mi.getThis().getClass();
+
         try {
             IgnoreAuth ignoreAuth = requestMethod.getAnnotation(IgnoreAuth.class);
 
@@ -46,8 +51,7 @@ public class DefaultPermissionAnnotationMethodInterceptor
 
             Permission permission = (Permission) typeAnnotation;
             //获取Controller注解model
-            Class<?> declaringClass = requestMethod.getDeclaringClass();
-            Model annotation= declaringClass.getAnnotation(Model.class);
+            Model annotation= targetClass.getAnnotation(Model.class);
 
             //若类上没有Model注解，则表明无法访问
             if(annotation!=null){

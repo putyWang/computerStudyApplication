@@ -1,10 +1,15 @@
 package com.learning.shiro.utils;
 
+import cn.hutool.core.date.DateUtil;
+import com.learning.core.utils.CollectionUtils;
+import com.learning.core.utils.StringUtils;
 import com.learning.shiro.contants.JwtConstants;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -16,15 +21,14 @@ import java.util.Map;
 /**
  * JWT工具类
  */
-@ConfigurationProperties(prefix = "jwt")
 @Component
 public class JwtUtils {
 
+
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    private String secret = "f4e2e52034348f86b67cde581c0f9eb5";
-    private long expire = 604800L;
-    private String header;
+    @Autowired
+    private JwtProperties jwtProperties;
 
     /**
      * 此方法需要详细解读
@@ -33,51 +37,46 @@ public class JwtUtils {
      * @param subject   代表这个JWT的主体，即它的所有人 一般是用户id
      * @param claims  有效时间(秒)
      */
-    public String createToken(String issuer, String subject, Map<String, Object> claims)
+    public String createToken(String issuer, Long subject, Claims claims)
             throws UnsupportedEncodingException {
 
         Date nowDate = new Date();
         //设置token时间 以秒为单位
-        Date expireDate = new Date(nowDate.getTime() + expire * 1000);
+        Date expireDate = new Date(nowDate.getTime() + jwtProperties.getExpire() * 1000);
+
+        claims.setSubject(subject.toString());
 
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setIssuer(issuer)
-                .setSubject(subject)
+                .setSubject(subject.toString())
                 .setIssuedAt(nowDate)
                 .setExpiration(expireDate)
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
+                .compact();
+    }
+
+    //从数据声明生成令牌
+    private String createToken(Map<String, Object> claims) {
+        Date expirationDate = new Date(System.currentTimeMillis() + jwtProperties.getExpire() * 1000);
+        return Jwts.builder()
+                //注入参数
+                .setClaims(claims)
+                //设置过期时间
+                .setExpiration(expirationDate)
+                //设置算法及密钥
+                .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
                 .compact();
     }
 
     /**
-     * 生成短时间刷新access_token
-     * @param subject 用户ID
-     * @param claims 载荷部分参数，即此用户的个人信息
-     * @return
-     */
-//    public static String getAccessToken(String subject, Map<String, Object> claims) {
-//        return createToken(issuer, subject, claims, accessTokenExpireTime.toMillis(), secretKey);
-//    }
-
-    /**
-     * 验证token的有效性
-     */
-//    public static boolean verify(String token, String secret) {
-//        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret)).build();
-//        verifier.verify(token);
-//        return true;
-//    }
-
-    /**
      * 通过载荷名字获取载荷的值，获取token列名
      */
-    public Map<String, Object> getClaim(String token) {
-        Map<String, Object> claim = new HashMap<>();
+    public Claims getClaim(String token) {
         try {
             return Jwts.parser()
-                    .setSigningKey(secret)
+                    .setSigningKey(jwtProperties.getSecret())
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
@@ -87,35 +86,57 @@ public class JwtUtils {
     }
 
     /**
+     * 当原来的token没过期时是可以刷新的
+     *
+     * @param token 带tokenHead的token
+     */
+    public String refreshToken(String token) {
+        if (StringUtils.isEmpty(token)) {
+            return null;
+        }
+
+        if (StringUtils.isEmpty(token)) {
+            return null;
+        }
+        //token校验不通过
+        Claims claim = getClaim(token);
+        if (CollectionUtils.isEmpty(claim)) {
+            return null;
+        }
+        //如果token已经过期，不支持刷新
+        if (isTokenExpired(token)) {
+            return null;
+        }
+        //如果token在30分钟之内刚刷新过，返回原token
+        if (tokenRefreshJustBefore(token, 30 * 60)) {
+            return token;
+        } else {
+            claim.put("created", new Date());
+            return createToken(claim);
+        }
+    }
+
+    /**
+     * 判断token在指定时间内是否刚刚刷新过
+     *
+     * @param token 原token
+     * @param time  指定时间（秒）
+     */
+    private boolean tokenRefreshJustBefore(String token, int time) {
+        Claims claims = getClaim(token);
+        Date created = claims.get("created", Date.class);
+        Date refreshDate = new Date();
+        //刷新时间在创建时间的指定时间内
+        return refreshDate.after(created) && refreshDate.before(DateUtil.offsetSecond(created, time));
+    }
+
+    /**
      * token是否过期
      *
      * @return true：过期
      */
-    public boolean isTokenExpired(Date expiration) {
+    public boolean isTokenExpired(String token) {
+        Date expiration = getClaim(token).getExpiration();
         return expiration.before(new Date());
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-
-    public long getExpire() {
-        return expire;
-    }
-
-    public void setExpire(long expire) {
-        this.expire = expire;
-    }
-
-    public String getHeader() {
-        return JwtConstants.ACESS_TOKEN;
-    }
-
-    public void setHeader(String header) {
-        this.header = header;
     }
 }

@@ -28,20 +28,27 @@ spring:
     # Flyway不严格验证版本顺序
     out-of-order: true
 jwt:
+  #加密盐
   secret: common
+  #token过期时间 单位秒
+  expire: 3600
 
 shiro:
-  loginUrl: /sso/login
-  authorizedUrl: /*
-  anonUrl: /swagger-resources/**
-  sessionManager:
-    #允许将sessionId 放到 cookie 中
-    sessionIdCookieEnabled: true
-    #允许将 sessionId 放到 Url 地址拦中
-    sessionIdUrlRewritingEnabled: true
+  authorizedUrl: /**
+  anonUrl: /doc.html,/sso/registered,/sso/login,/webjars/**,/swagger-resources,/v3/api-docs
   web:
     #表示是否开启shiro
     enabled: true
+
+shiro-redis:
+  enabled: true
+  cache-manager:
+    keyPrefix: learning:common
+    expire: 3600
+  redis-manager:
+    host: localhost:6379
+    timeout: 3600
+
 
 server:
   port: 9095

@@ -5,7 +5,7 @@
         <id property="id" column="id"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
-        <result property="roleCode" column="role_code"/>
+        <result property="roleCode" column="roleCode"/>
         <result property="status" column="status"/>
         <collection property="permissions" ofType="String">
             <result column="permission"/>
