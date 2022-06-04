@@ -17,7 +17,8 @@ public class DefaultPermissionAnnotationHandler
     }
 
     public void assertAuthorized(String permission) throws AuthorizationException {
-        this.getSubject().checkPermission(permission);
+        if (! this.getSubject().isPermitted(permission))
+            throw new AuthorizationException("该用户没有该权限");;
     }
 
     @Override

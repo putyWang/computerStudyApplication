@@ -15,7 +15,7 @@ public class ShiroProperties {
     private String authorizedUrl;
 
     /**
-     * 权限拦截忽略的类
+     * 权限拦截忽略的路径
      */
     private String anonUrl;
 }

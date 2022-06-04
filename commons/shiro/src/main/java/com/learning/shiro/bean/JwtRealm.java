@@ -6,6 +6,7 @@ import com.learning.core.utils.ObjectUtils;
 import com.learning.shiro.contants.JwtConstants;
 import com.learning.shiro.exception.NotLoginException;
 import com.learning.shiro.utils.JwtUtils;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -44,8 +45,10 @@ public class JwtRealm
      * */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        // 根据用户名查找角色，请根据需求实现
-        String token = (String)principalCollection.getPrimaryPrincipal();
+        // 获取UserInfo中保存的token
+        UserInfo userInfo = (UserInfo)principalCollection.getPrimaryPrincipal();
+        String token = userInfo.getToken();
+
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         Map<String, Object> claim = jwtUtils.getClaim(token);
 
@@ -64,7 +67,7 @@ public class JwtRealm
         // 添加相关用户权限
         Object permission = claim.get(JwtConstants.PERMISSION_NAME);
 
-        if (permission instanceof List && ObjectUtils.isEmpty(permission))
+        if (permission instanceof List && ! ObjectUtils.isEmpty(permission))
             authorizationInfo.setStringPermissions(Sets.newHashSet((List<String>)permission));
         else
             throw new AuthenticationException("权限添加有误");
@@ -82,11 +85,19 @@ public class JwtRealm
         // 获取token
         String token = jwtToken.getToken();
 
-        if (ObjectUtils.isEmpty(token)) {
+       if (ObjectUtils.isEmpty(token)) {
             throw NotLoginException.newInstance(NOT_TOKEN, NOT_TOKEN);
         }
 
-        Map<String, Object> claim = jwtUtils.getClaim(token);
+        //验证token是否过期
+        if (jwtUtils.isTokenExpired(token)) {
+            throw NotLoginException.newInstance(TOKEN_TIMEOUT, TOKEN_TIMEOUT, token);
+        }
+        // 未过期刷新Token
+        token = jwtUtils.refreshToken(token);
+
+        //获取相应的claim
+        Claims claim = jwtUtils.getClaim(token);
 
         if (CollectionUtils.isEmpty(claim)) {
             throw NotLoginException.newInstance(INVALID_TOKEN, INVALID_TOKEN, token);
@@ -101,7 +112,7 @@ public class JwtRealm
         Object status = claim.get(JwtConstants.USER_STATUS);
 
         // 用户状态验证有误
-        if(! (status instanceof Integer) || ! ObjectUtils.isEmpty(status))
+        if(! (status instanceof Integer) || ObjectUtils.isEmpty(status))
             throw new UnknownAccountException("用户状态输入有误");
 
         // 用户被禁用
@@ -109,58 +120,22 @@ public class JwtRealm
             throw new LockedAccountException("用户已被禁用");
         }
 
+        //创建相应的UserInfo
+        String subject = claim.getSubject();
+        Long id = Long.parseLong(subject);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(id);
+        userInfo.setToken(token);
+
         //将相关内容保存到SimplePrincipalCollection中
         try {
             return new SimpleAuthenticationInfo(
-                    claim,
+                    userInfo,
                     token,
                     (String)username
             );
         } catch (Exception e) {
             throw new AuthenticationException(e);
-        }
-    }
-
-    @Override
-    protected Object getAuthenticationCacheKey(PrincipalCollection principals) {
-        return "111";
-    }
-
-    /**
-     * SimpleByteSource未实现Serializable接口，在缓存序列化时会报错，所以使用子类代替
-     */
-    public static class ShiroByteSource
-            extends SimpleByteSource
-            implements Serializable {
-        /**
-         * 父类没有无参构造器，这里加一个
-         */
-        public ShiroByteSource() {
-            super(new byte[]{});
-        }
-
-        public ShiroByteSource(byte[] bytes) {
-            super(bytes);
-        }
-
-        public ShiroByteSource(char[] chars) {
-            super(chars);
-        }
-
-        public ShiroByteSource(String string) {
-            super(string);
-        }
-
-        public ShiroByteSource(ByteSource source) {
-            super(source);
-        }
-
-        public ShiroByteSource(File file) {
-            super(file);
-        }
-
-        public ShiroByteSource(InputStream stream) {
-            super(stream);
         }
     }
 }
