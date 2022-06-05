@@ -31,8 +31,6 @@ public class JwtAuthFilter
         extends BasicHttpAuthenticationFilter implements Filter {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private String secret;
-
     /**
      * 对跨域提供支持
      *

@@ -35,7 +35,7 @@ jwt:
 
 shiro:
   authorizedUrl: /**
-  anonUrl: /doc.html,/sso/registered,/sso/login,/webjars/**,/swagger-resources,/v3/api-docs
+  anonUrl: /doc.html,/sso/registered,/sso/login,/webjars/**,/swagger-resources,/v3/api-docs,/favicon.ico
   web:
     #表示是否开启shiro
     enabled: true
