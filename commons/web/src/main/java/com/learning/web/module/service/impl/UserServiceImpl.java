@@ -60,6 +60,8 @@ public class UserServiceImpl
         token = jwtUtils.createToken(username, user.getId(), claims);
         SecurityUtils.getSubject().login(new JwtToken(token));
 
+        System.out.println(token);
+
         return token;
     }
 }

@@ -27,6 +27,7 @@
         <!--            <artifactId>sa-token-spring-boot-starter</artifactId>-->
         <!--            <version>${sa-token-spring-boot-starter.version}</version>-->
         <!--        </dependency>-->
+
         <!--引入shrio-->
         <dependency>
             <groupId>org.apache.shiro</groupId>
@@ -34,12 +35,12 @@
             <!--            <version>1.8.0</version>-->
             <version>${shiro-spring-boot-starter}</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.crazycake</groupId>-->
+            <!--<artifactId>shiro-redis-spring-boot-starter</artifactId>-->
+            <!--<version>3.2.1</version>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>org.crazycake</groupId>
-            <artifactId>shiro-redis-spring-boot-starter</artifactId>
-            <version>3.2.1</version>
-        </dependency>
         <!--引入jwt-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

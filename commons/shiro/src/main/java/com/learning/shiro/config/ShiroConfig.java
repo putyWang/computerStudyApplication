@@ -1,8 +1,8 @@
 package com.learning.shiro.config;
 
-import com.learning.shiro.bean.JwtRealm;
 import com.learning.core.utils.CollectionUtils;
 import com.learning.core.utils.StringUtils;
+import com.learning.shiro.bean.JwtRealm;
 import com.learning.shiro.filter.JwtAuthFilter;
 import com.learning.shiro.handler.DefaultAuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
@@ -13,8 +13,6 @@ import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSource
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.crazycake.shiro.RedisCacheManager;
-import org.crazycake.shiro.RedisSessionDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -41,7 +39,7 @@ public class ShiroConfig {
 
     //ShiroFilter过滤所有请求
     @Bean("shiroFilterFactoryBean")
-    @DependsOn("securityManager")
+    @DependsOn({"securityManager"})
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         //给ShiroFilter配置安全管理器
@@ -66,7 +64,6 @@ public class ShiroConfig {
                 map.put(authorizedUrl, "jwt");
             });
         }
-        System.out.println(map);
 
         //设置自定义过滤器
         Map<String, Filter> filterMap = new HashMap<>();
@@ -79,31 +76,26 @@ public class ShiroConfig {
 
     /**
      * 向Session管理域中注入RedisSessionDao
-     * @param redisSessionDAO
      * @return
      */
     @Bean
-    public SessionManager sessionManager (RedisSessionDAO redisSessionDAO) {
+    public SessionManager sessionManager () {
         DefaultSessionManager sessionManager = new DefaultWebSessionManager();
-
-        //注入RedisSessionDAO
-        sessionManager.setSessionDAO(redisSessionDAO);
 
         return sessionManager;
     }
 
     /**
      * 创建安全管理器
+     * 禁用seesion
+     * 进行无状态登录
      * @return
      */
     @Bean("securityManager")
-    public DefaultWebSecurityManager getDefaultWebSecurityManager(JwtRealm jwtRealm, SessionManager sessionManager, RedisCacheManager redisCacheManager) {
+    public DefaultWebSecurityManager getDefaultWebSecurityManager(JwtRealm jwtRealm, SessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager(jwtRealm);
         //注入 sessionManager
         securityManager.setSessionManager(sessionManager);
-
-        //注入 redisCacheManager
-        securityManager.setCacheManager(redisCacheManager);
 
         /*
          * 关闭shiro自带的session，详情见文档
@@ -139,6 +131,18 @@ public class ShiroConfig {
         defaultAdvisorAutoProxyCreator.setUsePrefix(true);
         return defaultAdvisorAutoProxyCreator;
     }
+
+    /**
+     * 为了保证实现了Shiro内部lifecycle函数的bean执行 也是shiro的生命周期
+     * @return
+     */
+//    @Bean
+//
+//    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+//
+//        return new LifecycleBeanPostProcessor();
+//
+//    }
 
     /**
      * 将AuthorizedUrl转换为List
