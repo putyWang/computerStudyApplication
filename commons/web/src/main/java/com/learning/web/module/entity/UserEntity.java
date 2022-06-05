@@ -8,8 +8,6 @@ import com.learning.web.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("user")

@@ -2,15 +2,9 @@ package com.learning.core.utils;
 
 import com.learning.core.annotion.DtoSkip;
 import com.learning.core.annotion.FormatterType;
-import com.learning.core.annotion.Formatter;
-import com.learning.core.cache.CacheHelper;
-import com.learning.core.enums.Enabled;
-import com.learning.core.holder.UserContentHolder;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -90,7 +84,6 @@ public class CommonBeanUtil {
         Field[] superDeclaredFields = target.getClass().getSuperclass().getDeclaredFields();
         //将超类中的属性字段加入到字段中
         fields.addAll(Arrays.asList(superDeclaredFields));
-//        formatterHandler(source, target, fields);
 
         //为target对象所有值进行赋值
         for (Field field: formatterTypeFields) {
@@ -127,67 +120,6 @@ public class CommonBeanUtil {
         }
 
         return target;
-    }
-
-    /**
-     * 处理类
-     * @param source
-     * @param target
-     * @param fields
-     * @param <T>
-     */
-    private static <T> void formatterHandler(Object source, T target, List<Field> fields) {
-        Locale locale = LocaleContextHolder.getLocale();
-        String language = locale.getLanguage();
-        Map<String, Object> params = UserContentHolder.getContext().getParams();
-
-        fields.stream().parallel().filter((field) -> {
-            return field.isAnnotationPresent(Formatter.class);
-        }).forEach((field) -> {
-            try {
-                PropertyDescriptor descriptor = new PropertyDescriptor(field.getName(), target.getClass());
-                Method readMethod = descriptor.getReadMethod();
-                Object result = readMethod.invoke(target);
-                if (result instanceof Boolean) {
-                    result = (Boolean)result ? Enabled.YES.getValue() : Enabled.NO.getValue();
-                }
-
-                if (result != null) {
-                    Formatter annotation = field.getAnnotation(Formatter.class);
-                    CacheHelper cacheHelper = SpringContextUtil.getBean(CacheHelper.class);
-                    String key;
-                    String hashKey;
-                    if (StringUtils.isBlank(annotation.key())) {
-                        hashKey = annotation.dictCode();
-                        key = "csm:dict:prefix:" + language + ":" + hashKey;
-                    } else {
-                        key = formatKey(annotation.key(), annotation.replace(), params, source);
-                    }
-
-                    hashKey = result.toString();
-                    String dictValue = cacheHelper.hashGetString(key, hashKey);
-                    if (StringUtils.isBlank(dictValue)) {
-                        dictValue = cacheHelper.hashGetString(key, hashKey.toLowerCase());
-                    }
-
-                    if (StringUtils.isNotBlank(dictValue)) {
-                        PropertyDescriptor descriptorTarget = new PropertyDescriptor(field.getName(), target.getClass());
-                        if (StringUtils.isBlank(annotation.targetField())) {
-                            Method writeMethod = descriptorTarget.getWriteMethod();
-                            writeMethod.invoke(target, dictValue);
-                        } else {
-                            descriptorTarget = new PropertyDescriptor(annotation.targetField(), target.getClass());
-                            if (descriptorTarget != null) {
-                                descriptorTarget.getWriteMethod().invoke(target, dictValue);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        });
     }
 
     public static String formatKey(String key, String[] replaceArray, Map<String, Object> params, Object source) {

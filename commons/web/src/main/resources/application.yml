@@ -12,6 +12,19 @@ spring:
           password: 123456
           # password: ENC(nyw0TDA85NsyA6NlqDz37A==)
           driver-class-name: com.mysql.cj.jdbc.Driver # 3.2.0开始支持SPI可省略此配置
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+    timeout: 1200
+
   flyway:
     # 启用或禁用 flyway
     enabled: true
@@ -39,16 +52,6 @@ shiro:
   web:
     #表示是否开启shiro
     enabled: true
-
-shiro-redis:
-  enabled: true
-  cache-manager:
-    keyPrefix: learning:common
-    expire: 3600
-  redis-manager:
-    host: localhost:6379
-    timeout: 3600
-
 
 server:
   port: 9095

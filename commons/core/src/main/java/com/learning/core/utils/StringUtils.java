@@ -40,6 +40,25 @@ public final class StringUtils {
     }
 
     /**
+     * 判断字符串是否由数字组成
+     * @param str
+     * @return
+     */
+    public static boolean isNumeric (CharSequence str) {
+
+        if (null != str) {
+            for(int i = 0; i < str.length(); ++i) {
+                if (! Character.isDigit(str.charAt(i))) {
+
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * 判断字符串是否不为空
      * @param str
      * @return
