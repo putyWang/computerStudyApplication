@@ -61,7 +61,7 @@ public class UserServiceImpl
          * 若账号已被锁定，直接抛出异常
          */
         if (redisCache.hasKey(lockedKey)) {
-            throw new LockedAccountException("账号已被锁定，请于" + redisCache.get(lockedKey) + "后重新登录");
+            throw new LockedAccountException("账号已被锁定，请于" + secondToTime(redisCache.getExpire(lockedKey)) + "后重新登录");
         }
 
         UserDto user = this.getBaseMapper().selectByUsername(username);
@@ -110,5 +110,21 @@ public class UserServiceImpl
         log.info(token);
 
         return token;
+    }
+
+    private String secondToTime (Long second) {
+        StringBuilder time = new StringBuilder();
+
+        if (second / 3600 != 0) {
+            time.append(second / 3600).append( "时");
+            second = second % 3600;
+        }
+
+        if (second / 60 != 0) {
+            time.append(second / 60).append( "分");
+            second = second % 60;
+        }
+
+        return time.append(second).append("秒").toString();
     }
 }
