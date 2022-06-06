@@ -2,14 +2,14 @@ package com.learning.web.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.learning.core.bean.ApiResult;
+import com.learning.core.utils.CommonBeanUtil;
+import com.learning.exception.exception.ExceptionBuilder;
 import com.learning.shiro.annotion.Permission;
 import com.learning.web.dto.BaseDto;
-import com.learning.core.bean.ApiResult;
 import com.learning.web.entity.BaseEntity;
-import com.learning.exception.exception.ExceptionBuilder;
 import com.learning.web.param.PageParam;
 import com.learning.web.service.BaseService;
-import com.learning.core.utils.CommonBeanUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.util.CollectionUtils;
@@ -69,7 +69,7 @@ public abstract class BaseController<T extends BaseEntity, D extends BaseDto>
      * @return
      */
     @GetMapping ("/list")
-    @ApiOperation (value = "展示所有数据", notes = "展示所有数据")
+    @ApiOperation(value = "展示所有数据", notes = "展示所有数据")
     @Permission(value = "query", notes = "查询")
     public ApiResult list() {
 

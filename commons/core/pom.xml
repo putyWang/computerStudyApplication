@@ -16,6 +16,7 @@
         <mybatis-plus-boot-starter.version>3.5.0</mybatis-plus-boot-starter.version>
         <guava.version>21.0</guava.version>
         <fastjson.version>1.2.75</fastjson.version>
+        <swagger-annotations.version>1.5.20</swagger-annotations.version>
     </properties>
     <dependencies>
         <dependency>
@@ -76,14 +77,17 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
+        <!-- swagger工具类  -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
         </dependency>
 
         <dependency>
