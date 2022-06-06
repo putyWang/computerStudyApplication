@@ -17,6 +17,10 @@
         <guava.version>21.0</guava.version>
         <fastjson.version>1.2.75</fastjson.version>
         <swagger-annotations.version>1.5.20</swagger-annotations.version>
+        <commons-io>2.6</commons-io>
+        <hutool-core>5.6.5</hutool-core>
+        <spring-boot-starter-log4j2>2.6.7</spring-boot-starter-log4j2>
+        <dynamic-datasource-spring-boot-starter>3.3.6</dynamic-datasource-spring-boot-starter>
     </properties>
     <dependencies>
         <dependency>
@@ -47,7 +51,7 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-            <version>3.3.6</version>
+            <version>${dynamic-datasource-spring-boot-starter}</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -63,7 +67,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
-            <version>5.6.5</version>
+            <version>${hutool-core}</version>
         </dependency>
         <!--引入flyway-->
         <dependency>
@@ -71,6 +75,19 @@
             <artifactId>flyway-core</artifactId>
         </dependency>
 
+        <!--io工具依赖-->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io}</version>
+        </dependency>
+
+        <!--kafaka依赖-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>2.8.6</version>
+        </dependency>
         <!-- 通过工具类  -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -116,7 +133,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
-            <version>2.6.7</version>
+            <version>${spring-boot-starter-log4j2}</version>
         </dependency>
     </dependencies>
 

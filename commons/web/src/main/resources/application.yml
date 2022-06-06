@@ -40,6 +40,33 @@ spring:
       - CREATE DATABASE IF NOT EXISTS `test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
     # Flyway不严格验证版本顺序
     out-of-order: true
+  # kafka相关配置
+  kafka:
+    # kafka服务器地址
+    bootstrap-servers: 127.0.0.1:9092
+
+    # =============生产者==================
+    producer:
+      retries: 0
+      # kafka批量发送消息数量
+      batch-size: 1200
+      buffer-memory: 3000000
+      # 生产者消息key与消息体的编码格式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    # =============消费者==================
+    consumer:
+      # 指定默认消费者group id
+      group-id: test-consumer-group
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      auto-commit-interval: 100
+      # 消费者消息key与消息体的解码格式
+      key-deserializer: org.apache.kafka.common.serialization.StringSerializer
+      value-deserializer: org.apache.kafka.common.serialization.StringSerializer
+
+
 jwt:
   #加密盐
   secret: common

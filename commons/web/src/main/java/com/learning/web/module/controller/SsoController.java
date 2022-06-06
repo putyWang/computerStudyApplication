@@ -1,20 +1,25 @@
 package com.learning.web.module.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.learning.core.bean.SuccessRegistryMessage;
 import com.learning.core.cache.RedisCache;
+import com.learning.core.constants.KafkaConstants;
 import com.learning.core.utils.CommonBeanUtil;
 import com.learning.core.utils.MD5Utils;
 import com.learning.core.bean.ApiResult;
+import com.learning.core.utils.StringUtils;
 import com.learning.exception.exception.verificationCodeErrorException;
 import com.learning.web.module.dto.LoginDto;
 import com.learning.web.module.dto.UserDto;
 import com.learning.web.module.entity.UserEntity;
 import com.learning.web.module.service.UserService;
-import com.sun.deploy.association.RegisterFailedException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.core.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +35,9 @@ public class SsoController {
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @GetMapping("/login")
     @ApiOperation(value = "登录接口")
@@ -62,6 +70,10 @@ public class SsoController {
         String password = MD5Utils.encrypt(userDto.getPassword());
         userEntity.setPassword(password);
         userService.insert(userEntity);
+        //生产注册成功消息
+        SuccessRegistryMessage successRegistryMessage = new SuccessRegistryMessage();
+        kafkaTemplate.send(KafkaConstants.REGISTRY_SUCCESS_KEY, JSON.toJSONString(successRegistryMessage));
+
         return ApiResult.ok("注册成功");
     }
 }
