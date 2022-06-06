@@ -11,13 +11,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.learning</groupId>
     <artifactId>commons</artifactId>
-    <version>1.0.0</version>
+    <version>0.0.1</version>
     <name>commons</name>
     <packaging>pom</packaging>
-
-    <properties>
-        <project.version>0.0.1</project.version>
-    </properties>
 
     <modules>
         <module>core</module>

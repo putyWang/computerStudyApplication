@@ -186,12 +186,17 @@ public class GlobalExceptionHandler {
         if (exception instanceof LockedAccountException) {
             this.printApiCodeException(ApiCode.ACCOUNT_LOCKED, exception);
             return ApiResult.fail(ApiCode.ACCOUNT_LOCKED, exception.getMessage());
+        }else if (exception instanceof verificationCodeErrorException) {
+            this.printApiCodeException(ApiCode.ERROR_VERIFICATION_CODE, exception);
+            return ApiResult.fail(ApiCode.ERROR_VERIFICATION_CODE, exception.getMessage());
         }
 
         else {
             this.printApiCodeException(ApiCode.USER_ONTEXIST_ERROR, exception);
             return ApiResult.fail(ApiCode.USER_ONTEXIST_ERROR, exception.getMessage());
         }
+
+
 
     }
 

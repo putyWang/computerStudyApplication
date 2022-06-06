@@ -30,6 +30,7 @@ public enum ApiCode {
     TENANT_CODE_EXIST(4009, "租户编码已经存在"),
     TENANT_NAME_EXIST(4010, "租户编码已经存在"),
     ACCOUNT_LOCKED(4011, "账号已被锁定"),
+    ERROR_VERIFICATION_CODE(4012,"验证码错误"),
     SYSTEM_EXCEPTION(5000, "系统异常"),
     PARAMETER_EXCEPTION(5001, "请求参数校验异常"),
     PARAMETER_PARSE_EXCEPTION(5002, "请求参数解析异常"),

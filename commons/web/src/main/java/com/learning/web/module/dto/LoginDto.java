@@ -17,4 +17,12 @@ public class LoginDto {
     @ApiModelProperty(value = "密码", notes = "密码", required = true)
     @NotEmpty(message = "密码不能为空")
     private String password;
+
+    @ApiModelProperty(value = "验证码", notes = "验证码", required = true)
+    @NotEmpty(message = "验证码不能为空")
+    private String verificationCode;
+
+    @ApiModelProperty(value = "验证码缓存key", notes = "验证码缓存key", required = true)
+    @NotEmpty(message = "验证码缓存key不能为空")
+    private String verificationUUID;
 }

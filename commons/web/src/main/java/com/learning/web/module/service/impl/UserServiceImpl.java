@@ -8,6 +8,7 @@ import com.learning.core.constants.RedisConstants;
 import com.learning.core.utils.MD5Utils;
 import com.learning.core.utils.ObjectUtils;
 import com.learning.core.utils.StringUtils;
+import com.learning.exception.exception.verificationCodeErrorException;
 import com.learning.shiro.bean.JwtToken;
 import com.learning.shiro.contants.JwtConstants;
 import com.learning.shiro.utils.JwtUtils;
@@ -51,6 +52,15 @@ public class UserServiceImpl
     @Override
     public String login(LoginDto login) {
 
+        //验证验证码是否正确
+        String verificationUUID = login.getVerificationUUID();
+        Object o = redisCache.get(verificationUUID);
+        if (! (o instanceof String) || o.equals(login.getVerificationCode())) {
+            throw new verificationCodeErrorException("验证码有误，请重新输入");
+        }
+        //删除验证码缓存
+        redisCache.delete(verificationUUID);
+
         String username = login.getUsername();
 
         String lockedKey = username + RedisConstants.USER_LOCKED_KEY;
@@ -77,7 +87,7 @@ public class UserServiceImpl
         if (! user.getPassword().equals(MD5Utils.encrypt(login.getPassword()))) {
             Integer errorNumber = 1;
             //获取密码错误次数
-            Object o = redisCache.get(passwordErrorTimesKey);
+            o = redisCache.get(passwordErrorTimesKey);
             if (o instanceof String && StringUtils.isNumeric((String)o)) {
                 errorNumber += Integer.parseInt((String)o);
             }

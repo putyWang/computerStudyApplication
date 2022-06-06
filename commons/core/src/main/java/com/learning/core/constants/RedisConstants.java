@@ -18,4 +18,7 @@ public class RedisConstants {
      * 输错多次密码后锁定时间
      */
     public static final Long DEFAULT_USER_LOCKED_TIME_OUT = 600L;
+
+
+    public static final Long DEFAULT_VERIFICATION_CODE_TIME_OUT = 120L;
 }
