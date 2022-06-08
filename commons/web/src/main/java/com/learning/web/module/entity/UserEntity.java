@@ -35,4 +35,9 @@ public class UserEntity extends BaseEntity {
      * 0为以禁用
      */
     private Integer status;
+
+    /**
+     * 邮箱地址
+     */
+    private String email;
 }

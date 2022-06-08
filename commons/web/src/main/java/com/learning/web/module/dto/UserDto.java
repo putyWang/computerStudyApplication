@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
@@ -37,4 +38,13 @@ public class UserDto extends BaseDto {
 
     @ApiModelProperty(value = "用户权限信息", hidden = true)
     private List<String> permissions;
+
+    /**
+     * 邮箱地址
+     * 正则表达式（"/^(\\w)+(\\.\\w+)*@(\\w)+((\\.\\w+)+)$/"）
+     */
+    @ApiModelProperty(value = "邮箱地址", notes = "邮箱地址", required = true)
+    @NotEmpty(message = "邮箱地址不能为空")
+    @Email(regexp = "^[\\w-]+(\\.[\\w-]+)*@[\\w-]+(\\.[\\w-]+)+$", message = "邮箱地址格式有误，请重新输入")
+    private String email;
 }

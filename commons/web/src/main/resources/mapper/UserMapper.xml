@@ -7,6 +7,7 @@
         <result property="password" column="password"/>
         <result property="roleCode" column="roleCode"/>
         <result property="status" column="status"/>
+        <result property="email" column="email"/>
         <collection property="permissions" ofType="String">
             <result column="permission"/>
         </collection>
@@ -14,7 +15,7 @@
 
     <select id="selectByUsername" resultMap="UserDto">
         select
-            u.id, u.status, u.username, u.password, u.role_code as roleCode, CONCAT(ap.permission_code ,'_' , ac.permission_code) as permission
+            u.id, u.status, u.username, u.password, u.email, u.role_code as roleCode, CONCAT(ap.permission_code ,'_' , ac.permission_code) as permission
         from
             user as u
         join

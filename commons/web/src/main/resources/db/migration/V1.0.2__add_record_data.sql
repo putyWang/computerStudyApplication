@@ -5,10 +5,10 @@
 BEGIN;
 
 INSERT INTO `user`
-VALUES (1, 'zs', 'DELETE_FLAG', 1, 'superAdmin');
+VALUES (1, 'zs', 'DELETE_FLAG', 1, '13540025344@163.com', 'superAdmin');
 
 INSERT INTO `user`
-VALUES (2, 'ls', 'DELETE_FLAG', 1, 'user');
+VALUES (2, 'ls', 'DELETE_FLAG', 1, '13540025344@163.com', 'user');
 
 COMMIT;
 

@@ -2,8 +2,6 @@ package com.learning.core.constants;
 
 public class RedisConstants {
 
-    public static final Long NEVER_EXPIRE = -1L;
-
     /**
      * 密码输错次数key
      */

@@ -12,7 +12,19 @@ spring:
           password: 123456
           # password: ENC(nyw0TDA85NsyA6NlqDz37A==)
           driver-class-name: com.mysql.cj.jdbc.Driver # 3.2.0开始支持SPI可省略此配置
-
+  druid:
+    initial-size: 10 # 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时
+    min-idle: 10 # 最小连接池数量
+    maxActive: 200 # 最大连接池数量
+    maxWait: 3000 # 获取连接时最大等待时间，单位毫秒。配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置
+    timeBetweenEvictionRunsMillis: 60000 # 关闭空闲连接的检测时间间隔.Destroy线程会检测连接的间隔时间，如果连接空闲时间大于等于minEvictableIdleTimeMillis则关闭物理连接。
+    minEvictableIdleTimeMillis: 300000 # 连接的最小生存时间.连接保持空闲而不被驱逐的最小时间
+    testWhileIdle: true # 申请连接时检测空闲时间，根据空闲时间再检测连接是否有效.建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRun
+    poolPreparedStatements: true # 开启PSCache
+    maxPoolPreparedStatementPerConnectionSize: 20 #设置PSCache值
+    connectionErrorRetryAttempts: 3 # 连接出错后再尝试连接三次
+    breakAfterAcquireFailure: true # 数据库服务宕机自动重连机制
+    timeBetweenConnectErrorMillis: 300000 # 连接出错后重试时间间隔
   redis:
     host: 127.0.0.1
     port: 6379
@@ -23,7 +35,25 @@ spring:
         max-wait: -1
         max-idle: 8
         min-idle: 0
-    timeout: 1200
+    #timeout: -1
+  mail:
+    sendName: learning
+    #坑爹的地方：host 通道个人邮箱和企业邮箱通道不同。163的个人邮箱：smtp.163.com ，企业邮箱：smtp.qiye.163.com
+    # 腾讯的，个人smtp.qq.com， 企业的：smtp.exmail.qq.com
+    host: smtp.qq.com
+    username: 1006015056@qq.com
+    # 口令是QQ邮箱开通的smtp服务后得到的客户端授权码,不是你的邮箱登录密码
+    password: ubucmsvrtzgrbeig
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+        # 开启debug，方便查看邮件发送日志
+        debug: true
 
   flyway:
     # 启用或禁用 flyway
@@ -63,8 +93,8 @@ spring:
       enable-auto-commit: true
       auto-commit-interval: 100
       # 消费者消息key与消息体的解码格式
-      key-deserializer: org.apache.kafka.common.serialization.StringSerializer
-      value-deserializer: org.apache.kafka.common.serialization.StringSerializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 
 jwt:

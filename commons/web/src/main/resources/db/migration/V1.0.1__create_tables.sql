@@ -44,16 +44,17 @@ CREATE TABLE `flyway_schema_history`
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
-   `id`        bigint(20)                                              NOT NULL AUTO_INCREMENT,
-   `username`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-   `password`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-   `status`    TINYINT                                                 DEFAULT 1               COMMENT '用户状态，0为锁定，1为正常',
-   `role_code` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+   `id`        bigint(20)                                                    NOT NULL AUTO_INCREMENT,
+   `username`  varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+   `password`  varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+   `status`    TINYINT                                                       DEFAULT 1               COMMENT '用户状态，0为锁定，1为正常',
+   `email`     varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL                COMMENT '用户邮箱',
+   `role_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
    PRIMARY KEY (`id`) USING BTREE,
    UNIQUE KEY `username` (`username`) USING BTREE
 ) ENGINE = InnoDB
-  CHARACTER SET = utf8
-  COLLATE = utf8_general_ci ROW_FORMAT = Dynamic
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic
   COMMENT ='用户表';
 
 -- ----------------------------

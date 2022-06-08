@@ -71,7 +71,7 @@ public class RedisCache {
      * @param value
      */
     public void set (String key, String value) {
-        this.set(key, value, RedisConstants.NEVER_EXPIRE);
+        redisTemplate.opsForValue().set(key, value);
     }
 
     /**
