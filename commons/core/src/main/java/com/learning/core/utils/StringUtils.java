@@ -406,6 +406,18 @@ public final class StringUtils {
         return returnJsonObject;
     }
 
+    /**
+     * 替换str中相关子字符串
+     * @param str 原字符串
+     * @param replaced 被替换的子串
+     * @param replacing 用于替换的子串
+     * @return 替换后的字符串
+     */
+    public static String replace (String str, String replaced, String replacing) {
+
+        return org.apache.commons.lang3.StringUtils.replace(str,replaced,replacing);
+    }
+
     public static JSONObject valueToStringValue(JSONObject jsonObject) {
         Iterator keys = jsonObject.keySet().iterator();
 
