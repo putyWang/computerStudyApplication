@@ -1,5 +1,6 @@
 package com.learning.web.module.controller;
 
+import cn.hutool.core.util.IdcardUtil;
 import com.alibaba.fastjson.JSON;
 import com.learning.core.bean.SuccessRegistryMessage;
 import com.learning.core.cache.RedisCache;
@@ -9,6 +10,7 @@ import com.learning.core.utils.MD5Utils;
 import com.learning.core.bean.ApiResult;
 import com.learning.core.utils.ObjectUtils;
 import com.learning.core.utils.StringUtils;
+import com.learning.exception.exception.VerificationCodeException;
 import com.learning.exception.exception.verificationCodeErrorException;
 import com.learning.web.module.dto.LoginDto;
 import com.learning.web.module.dto.UserDto;
@@ -24,8 +26,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ValidationException;
 import javax.validation.constraints.NotEmpty;
 
 @RestController
@@ -73,6 +77,12 @@ public class SsoController {
         //删除验证码缓存
         redisCache.delete(verificationUUID);
 
+        //验证身份证号码合法性
+        if (! IdcardUtil.isValidCard(userDto.getIdCard())) {
+            throw new VerificationCodeException("身份证号码格式有误");
+        }
+
+        //存储用户信息
         UserEntity user = new UserEntity();
         UserEntity userEntity = CommonBeanUtil.copyAndFormat(user, userDto);
         String password = MD5Utils.encrypt(userDto.getPassword());

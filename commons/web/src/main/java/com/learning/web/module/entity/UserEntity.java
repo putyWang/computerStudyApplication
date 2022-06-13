@@ -40,4 +40,14 @@ public class UserEntity extends BaseEntity {
      * 邮箱地址
      */
     private String email;
+
+    /**
+     * 手机号码
+     */
+    private String phoneNumber;
+
+    /**
+     * 身份证号码
+     */
+    private String idCard;
 }

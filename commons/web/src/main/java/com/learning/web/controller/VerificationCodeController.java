@@ -95,8 +95,8 @@ public class VerificationCodeController {
         map.put("image", "data:image/png;base64," + base64);
         map.put("verifyToken", verifyToken);
         //将验证码存储到redis缓存之中(过期时间为一分钟)
-        //redisCache.set(verifyToken, code, RedisConstants.DEFAULT_VERIFICATION_CODE_TIME_OUT);
-        redisCache.set(verifyToken, code);
+        redisCache.set(verifyToken, code, RedisConstants.DEFAULT_VERIFICATION_CODE_TIME_OUT);
+//        redisCache.set(verifyToken, code);
 
         return ApiResult.ok(map);
     }

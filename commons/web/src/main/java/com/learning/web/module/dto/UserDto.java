@@ -1,5 +1,6 @@
 package com.learning.web.module.dto;
 
+import com.learning.core.annotion.MobilePhoneNumber;
 import com.learning.web.dto.BaseDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -47,4 +48,15 @@ public class UserDto extends BaseDto {
     @NotEmpty(message = "邮箱地址不能为空")
     @Email(regexp = "^[\\w-]+(\\.[\\w-]+)*@[\\w-]+(\\.[\\w-]+)+$", message = "邮箱地址格式有误，请重新输入")
     private String email;
+
+    @ApiModelProperty(value = "电话号码", notes = "电话号码", required = true)
+    @MobilePhoneNumber(message = "电话号码格式有误，请重新输入")
+    private String phoneNumber;
+
+    /**
+     * 身份证号
+     */
+    @ApiModelProperty(value = "身份证号", notes = "身份证号", required = true)
+    @NotEmpty(message = "身份证号不能为空")
+    private String idCard;
 }
