@@ -8,6 +8,18 @@ import java.io.File;
 public class MailData {
 
     /**
+     * 发送人email账号（163或者qq邮箱） （必填）
+     */
+    String sendUserAccount;
+    /**
+     * 发送人email的授权码（必填）
+     */
+    String sendUserPassword;
+    /**
+     * 发送人的昵称
+     */
+    String sendUserNickName;
+    /**
      * 发送邮件文字内容
      */
     private String message;

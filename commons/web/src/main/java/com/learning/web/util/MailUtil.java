@@ -2,13 +2,13 @@ package com.learning.web.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.learning.core.utils.ArrayUtils;
-import com.learning.core.utils.CollectionUtils;
 import com.learning.core.utils.ObjectUtils;
 import com.learning.web.entity.MailData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.util.CollectionUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -18,32 +18,176 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class MailUtil {
+/**
+ * 发送邮件工具类
+ */
+public final class MailUtil {
 
     public static final Logger log = LoggerFactory.getLogger(MailUtil.class);
+
+    /**
+     * 批量处理数据的大小
+     */
+    private final static int batchSize = 5000;
+
+    /**
+     * 线程池线程数量
+     */
+    private final static int poolSize = 5;
+
+    /**
+     * 插入数据的时间间隔，每间隔intervalTime的时间自动插入一次
+     */
+    private final static long intervalTime = 1000*60*5;
+
+    private static MailUtil mailUtil;
 
     /**
      * 线程池，最多同时3个线程在运行，其他的排队等候
      */
     private static ExecutorService executor = Executors.newFixedThreadPool(3);
 
-    /**
-     *  发送邮件（注意发送人的邮箱必须设置开通POP3/SMTP/IMAP，否则无法发送）
-     * @param sendUserAccount 发送人email账号（163或者qq邮箱） （必填）
-     * @param sendUserPassword 发送人email的授权码（必填）
-     * @param sendUserNickName 发送人的昵称
-     * @param mailData 接收人 （必填）
+    /*
+     * 当前激活的线程数量计数器
      */
-    public static void sendMail(String sendUserAccount, String sendUserPassword, String sendUserNickName, MailData mailData){
+    private static AtomicInteger activeThreadCount = new AtomicInteger(0);
+    /**
+     *
+     * 初始化队列， 作为数据缓存池。
+     * 缓存池的大小为：batchSize * (poolSize + 1)
+     */
+    private static BlockingQueue<MailData> blockingQueue = new LinkedBlockingQueue<>(batchSize * (poolSize + 20));
+    /**
+     * 可重用固定个数的线程池
+     * 可控制线程最大并发数，超出的线程会在队列中等待,当处理完一个马上就会去接着处理排队中的任务
+     */
+    private static ExecutorService fixedThreadPool = Executors.newFixedThreadPool(poolSize);
 
-        MailThread mail = new MailThread(sendUserAccount, sendUserPassword, sendUserNickName, mailData.getReceiveUsers(), mailData.getCopyUsers(), mailData.getDarkUsers(), mailData.getTitle(), mailData.getMessage(),  mailData.getBodyImages(), mailData.getAttachDocs());
-        executor.execute(mail);
+    public MailUtil() {
     }
 
-    private static  class MailThread extends Thread{
+    /**
+     * 获取单例实例
+     * @return ElasticBulkProcessor
+     */
+    public static MailUtil getInstance() {
+        if (null == mailUtil) {
+            // 多线程同步
+            synchronized (MailUtil.class) {
+                if (null == mailUtil) {
+                    mailUtil = new MailUtil();
+                }
+            }
+        }
+
+        return mailUtil;
+    }
+
+    /**
+     * 同步执行add,往队列中添加一条数据
+     * @param mailData 邮件数据
+     */
+    public synchronized void add(MailData mailData) {
+        try {
+            if (! ObjectUtils.isEmpty(mailData)){
+                log.info("向canal消息队列插入一条数据：" + mailData.toString());
+                // 将指定元素插入此队列中，将等待可用的空间.当>maxSize 时候，阻塞，直到能够有空间插入元素
+                blockingQueue.put(mailData);
+                // 执行线程
+                execute();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 线程池执行
+     */
+    private void execute() {
+        // 获取当前活动的线程数
+        int curActiveCount = activeThreadCount.get();
+        Future<Long> future;
+
+        // 如果激活的线程池为0，创建一个新的线程
+        if (curActiveCount == 0) {
+            ExecuteClass executeClass = new ExecuteClass();
+            // 开启一个线程，和execute区别为有返回值
+            future = fixedThreadPool.submit(executeClass);
+            activeThreadCount.incrementAndGet();
+        }
+    }
+
+    /**
+     * 实现Callable可以返回现线程执行结果
+     * 返回结果为执行成功的数量
+     */
+    class ExecuteClass
+            implements Callable<Long> {
+
+        @Override
+        public Long call() throws Exception {
+            log.info("start thread -" + Thread.currentThread().getName());
+            // 空闲时间
+            long freeTime = 0;
+            long sleep = 100;
+            long longSleep = 1000*60;
+            List<MailData> entries;
+
+            // 无限循环从blockQueue中取数据
+            while (true) {
+                try{
+                    // 只要消息队列有数据就立即执行
+                    if (blockingQueue != null && blockingQueue.size() >= 1) {
+                        freeTime = 0;
+                        entries = new ArrayList<>();
+                        //取出邮件数据对象进行消费
+                        MailData mailData = blockingQueue.poll();
+                        if (!CollectionUtils.isEmpty(entries)) {
+                            // 将数据插入es
+                            consume(mailData);
+                        }
+                    } else {
+                        // 等待100ms
+                        Thread.sleep(sleep);
+                        freeTime += sleep;
+                    }
+
+                    // 如果总空闲时间超过5分钟， 结束当前线程
+                    if (freeTime >= intervalTime) {
+                        log.info("stop Thread-" + Thread.currentThread().getName());
+                        activeThreadCount.decrementAndGet();
+                        break;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    activeThreadCount.decrementAndGet();
+                    break;
+                }
+            }
+
+            return null;
+        }
+
+    }
+
+    /**
+     * 发送邮件（注意发送人的邮箱必须设置开通POP3/SMTP/IMAP，否则无法发送）
+     * @param mailData
+     */
+    private void consume(MailData mailData){
+        MailSender mail = new MailSender(mailData.getSendUserAccount(), mailData.getSendUserPassword(), mailData.getSendUserNickName(), mailData.getReceiveUsers(), mailData.getCopyUsers(), mailData.getDarkUsers(), mailData.getTitle(), mailData.getMessage(),  mailData.getBodyImages(), mailData.getAttachDocs());
+        mail.sendMail();
+    }
+
+    /**
+     * 邮件发送对象
+     */
+    private static class MailSender{
 
         private String sendUserAccount;
         private String sendUserPassword;
@@ -58,12 +202,12 @@ public class MailUtil {
 
         private JSONObject params;//参数集合
 
-        public MailThread(String sendUserAccount, String sendUserPassword,
+        public MailSender(String sendUserAccount, String sendUserPassword,
                           String sendUserNickName, String[] receiveUsers,
                           String[] copyUsers, String[] darkUsers, String title,
                           String text, File[] bodyImgs,
                           File[] attachDocs) {
-            super();
+
             this.sendUserAccount = sendUserAccount;
             this.sendUserPassword = sendUserPassword;
             this.sendUserNickName = sendUserNickName;
@@ -106,7 +250,7 @@ public class MailUtil {
             }
         }
 
-        public void run(){
+        public void sendMail(){
             long startTime = System.currentTimeMillis();
 
             try {

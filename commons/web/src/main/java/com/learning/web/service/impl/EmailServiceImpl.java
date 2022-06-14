@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+/**
+ * 邮件发送服务类
+ */
 @Service
 public class EmailServiceImpl implements EmailService {
 
@@ -21,6 +24,13 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void send(String email, MailData mailData) {
 
-            MailUtil.sendMail(mailProperties.getUsername(), mailProperties.getPassword(), name, mailData);
+        mailData.setSendUserNickName(name);
+        mailData.setSendUserAccount(mailProperties.getUsername());
+        mailData.setSendUserPassword(mailProperties.getPassword());
+
+        /**
+         * 将邮件发送对象添加到邮件发送队列中
+         */
+        MailUtil.getInstance().add(mailData);
     }
 }
