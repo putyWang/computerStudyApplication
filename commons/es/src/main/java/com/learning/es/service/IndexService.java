@@ -15,13 +15,39 @@ import java.util.Map;
  */
 public interface IndexService {
 
-    String refreshIndex(String... var1) throws IOException;
+    /**
+     * 刷新索引
+     * @param indices
+     * @return
+     * @throws IOException
+     */
+    String refreshIndex(String... indices)
+            throws IOException;
 
-    String getSetting(String... var1) throws IOException;
+    /**
+     * 获取es索引相应的设置
+     * @param indices 索引
+     * @return
+     * @throws IOException
+     */
+    String getSetting(String... indices)
+            throws IOException;
 
-    Boolean updateSettings(Map<String, Object> var1, String... var2);
+    /**
+     * 刷新索引设置
+     * @param settingsMap key为索引设置名称，value表示新值
+     * @param indices 索引
+     * @return 是否刷新成功
+     */
+    Boolean updateSettings(Map<String, Object> settingsMap, String... indices);
 
-    Boolean addField(String var1, ElasticFieldType... var2);
+    /**
+     * 为索引添加字段
+     * @param index 索引
+     * @param elasticFieldTypes
+     * @return
+     */
+    Boolean addField(String index, ElasticFieldType... elasticFieldTypes);
 
     String getMapping(String... var1) throws IOException;
 

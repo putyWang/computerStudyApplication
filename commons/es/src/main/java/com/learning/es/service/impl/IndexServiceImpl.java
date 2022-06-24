@@ -13,7 +13,6 @@ import com.learning.es.model.MappingPropertiesModel;
 import com.learning.es.model.SettingModel;
 import com.learning.es.model.elastic.*;
 import com.learning.es.service.IndexService;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
@@ -51,12 +50,6 @@ public class IndexServiceImpl
         }
     }
 
-    /**
-     * 刷新索引
-     * @param indices
-     * @return
-     * @throws IOException
-     */
     public String refreshIndex(String... indices)
             throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
@@ -75,12 +68,6 @@ public class IndexServiceImpl
         return EntityUtils.toString(response.getEntity(), "UTF-8");
     }
 
-    /**
-     * 获取es索引相应的设置
-     * @param indices 索引
-     * @return
-     * @throws IOException
-     */
     public String getSetting(String... indices)
             throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
@@ -120,12 +107,6 @@ public class IndexServiceImpl
         return EntityUtils.toString(response.getEntity(), "UTF-8");
     }
 
-    /**
-     * 刷新索引设置
-     * @param settingsMap key为索引设置名称，value表示新值
-     * @param indices 索引
-     * @return 是否刷新成功
-     */
     public Boolean updateSettings(Map<String, Object> settingsMap, String... indices) {
         UpdateSettingsRequest request = new UpdateSettingsRequest(indices);
         request.settings(settingsMap);
@@ -142,12 +123,6 @@ public class IndexServiceImpl
         }
     }
 
-    /**
-     * 为索引添加字段
-     * @param index 索引
-     * @param elasticFieldTypes
-     * @return
-     */
     public Boolean addField(String index, ElasticFieldType... elasticFieldTypes) {
         String responseBody = "";
         String endPoint = index + "/_mapping/" + "doc";

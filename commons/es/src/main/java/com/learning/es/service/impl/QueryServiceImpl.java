@@ -2,6 +2,8 @@ package com.learning.es.service.impl;
 
 import com.learning.core.exception.ElasticException;
 import com.learning.core.exception.SpringBootException;
+import com.learning.core.utils.ArrayUtils;
+import com.learning.core.utils.CollectionUtils;
 import com.learning.es.bean.SearchResult;
 import com.learning.es.clients.RestClientFactory;
 import com.learning.es.constants.ElasticMethodInterface;
@@ -50,12 +52,6 @@ public class QueryServiceImpl implements QueryService {
         }
     }
 
-    /**
-     * 获取索引计数
-     * @param queryBuilder
-     * @param indices 索引数组
-     * @return
-     */
     public long count(QueryBuilder queryBuilder, String... indices) {
         //设置索引计数器
         CountRequest countRequest = new CountRequest(indices);
@@ -69,14 +65,6 @@ public class QueryServiceImpl implements QueryService {
         }
     }
 
-    /**
-     * 执行分页查询
-     * @param queryBuilder 查询构造器
-     * @param size 查询数据的条数，默认为 10；
-     * @param from 查询数据开始的位置，默认为0；
-     * @param indices 索引
-     * @return
-     */
     public SearchResult search(QueryBuilder queryBuilder, int size, int from, String... indices) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         //设置分页查询条件
@@ -84,15 +72,6 @@ public class QueryServiceImpl implements QueryService {
         return this.search(searchSourceBuilder, indices);
     }
 
-    /**
-     * 获取有排序的结果
-     * @param queryBuilder 查询构造器
-     * @param sortBuilder 排序构造器
-     * @param size 查询数据的条数，默认为 10；
-     * @param from 查询数据开始的位置，默认为0；
-     * @param indices 索引
-     * @return
-     */
     public SearchResult search(QueryBuilder queryBuilder, SortBuilder sortBuilder, int size, int from, String... indices) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(queryBuilder).size(size).from(from);
@@ -104,15 +83,6 @@ public class QueryServiceImpl implements QueryService {
         return this.search(searchSourceBuilder, indices);
     }
 
-    /**
-     * 搜索带有对应字段的结果
-     * @param queryBuilder 查询构造器
-     * @param fields 包含的字段
-     * @param size 查询数据的条数，默认为 10；
-     * @param from 查询数据开始的位置，默认为0；
-     * @param indices 索引
-     * @return
-     */
     public SearchResult search(QueryBuilder queryBuilder, String[] fields, int size, int from, String... indices) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder
@@ -127,12 +97,6 @@ public class QueryServiceImpl implements QueryService {
         return this.search(searchSourceBuilder, indices);
     }
 
-    /**
-     * 根据sourceBuilder 查询数据
-     * @param sourceBuilder 搜索源构造器
-     * @param indices 索引
-     * @return
-     */
     public SearchResult search(SearchSourceBuilder sourceBuilder, String... indices) {
         return getSearchResult(this.searchForHits(sourceBuilder, indices));
     }
@@ -161,21 +125,10 @@ public class QueryServiceImpl implements QueryService {
         return searchResult;
     }
 
-    /**
-     * 根据搜索请求获取结果
-     * @param searchRequest 搜索请求
-     * @return
-     */
     public SearchResult search(SearchRequest searchRequest) {
         return getSearchResult(this.searchForHits(searchRequest));
     }
 
-    /**
-     * 搜索相应构造器索引下的相关数据
-     * @param sourceBuilder 搜索源构造器
-     * @param indices 索引
-     * @return
-     */
     public SearchHits searchForHits(SearchSourceBuilder sourceBuilder, String... indices) {
         SearchRequest searchRequest = new SearchRequest(indices);
         //设置类型过滤条件
@@ -184,15 +137,6 @@ public class QueryServiceImpl implements QueryService {
         return this.searchForHits(searchRequest);
     }
 
-    /**
-     * 带高亮的查询
-     * @param sourceBuilder 查询源构造器
-     * @param highlightBuilder 高亮构造器
-     * @param size 查询数据的条数，默认为 10；
-     * @param from 查询数据开始的位置，默认为0；
-     * @param indices 索引
-     * @return
-     */
     public SearchHits searchForHits(SearchSourceBuilder sourceBuilder, HighlightBuilder highlightBuilder, int from, int size, String... indices) {
         sourceBuilder.from(from)
                 .size(size)
@@ -201,11 +145,6 @@ public class QueryServiceImpl implements QueryService {
         return this.searchForHits(sourceBuilder, indices);
     }
 
-    /**
-     * 获取查询的数据
-     * @param searchRequest 查询请求
-     * @return
-     */
     public SearchHits searchForHits(SearchRequest searchRequest) {
 
         try {
@@ -217,15 +156,6 @@ public class QueryServiceImpl implements QueryService {
         }
     }
 
-    /**
-     *
-     * @param searchRequest
-     * @param sourceBuilder
-     * @param boolQueryBuilder
-     * @param from
-     * @param size
-     * @return
-     */
     public SearchHits searchForHits(SearchRequest searchRequest, SearchSourceBuilder sourceBuilder, BoolQueryBuilder boolQueryBuilder, int from, int size) {
         searchRequest.types("doc");
         sourceBuilder.from(from);
@@ -236,24 +166,38 @@ public class QueryServiceImpl implements QueryService {
     }
 
     public SearchHits searchForHits(SearchRequest searchRequest, SearchSourceBuilder sourceBuilder, BoolQueryBuilder boolQueryBuilder, int from, int size, List<String> regNos) {
-        searchRequest.types(new String[]{"doc"});
-        sourceBuilder.from(from).size(size).query(boolQueryBuilder);
-        searchRequest.routing((String[])regNos.toArray(new String[0])).source(sourceBuilder);
+        searchRequest.types("doc");
+        sourceBuilder
+                .from(from)
+                .size(size)
+                .query(boolQueryBuilder);
+
+        //指定查询的路由分片
+        searchRequest.routing(regNos.toArray(new String[0]))
+                .source(sourceBuilder);
+
         return this.searchForHits(searchRequest);
     }
 
     public SearchHits searchForHits(SearchRequest searchRequest, BoolQueryBuilder boolQueryBuilder, List<String> regNos, int from, int size) {
-        searchRequest.types(new String[]{"doc"}).routing((String[])regNos.toArray(new String[0])).source((new SearchSourceBuilder()).from(from).size(size).query(boolQueryBuilder));
+        searchRequest.types("doc")
+                .routing(regNos.toArray(new String[0]))
+                .source((new SearchSourceBuilder())
+                        .from(from)
+                        .size(size)
+                        .query(boolQueryBuilder));
+
         return this.searchForHits(searchRequest);
     }
 
     public List<Map<String, Object>> scrollSearch(QueryBuilder queryBuilder, String... indices) {
-        return this.scrollSearch(queryBuilder, (String[])null, indices);
+        return this.scrollSearch(queryBuilder, null, indices);
     }
 
     public List<Map<String, Object>> scrollSearch(QueryBuilder queryBuilder, String[] fields, String... indices) {
         return this.scrollSearch(null, true, queryBuilder, fields, indices);
     }
+
 
     public void scrollSearch(ElasticMethodInterface methodInterface, QueryBuilder queryBuilder, String[] fields, String... indices) {
         queryBuilder = QueryBuilders.constantScoreQuery(queryBuilder);
@@ -265,20 +209,18 @@ public class QueryServiceImpl implements QueryService {
     }
 
     public List<Map<String, Object>> scrollSearch(SearchRequest searchRequest) {
-        List<Map<String, Object>> result = new ArrayList();
+        List<Map<String, Object>> result = new ArrayList<>();
+
         if (searchRequest != null && !searchRequest.source().toString().equals("{}")) {
             Scroll scroll = new Scroll(TimeValue.timeValueMinutes(5L));
             searchRequest.scroll(scroll);
-            searchRequest.types(new String[]{"doc"});
+            searchRequest.types("doc");
 
             try {
                 SearchResponse searchResponse = this.client.search(searchRequest, RequestOptions.DEFAULT);
                 SearchHit[] searchHits = searchResponse.getHits().getHits();
-                SearchHit[] var6 = searchHits;
-                int var7 = searchHits.length;
 
-                for(int var8 = 0; var8 < var7; ++var8) {
-                    SearchHit searchHit = var6[var8];
+                for(SearchHit searchHit : searchHits) {
                     Map<String, Object> curMap = searchHit.getSourceAsMap();
                     curMap.put("doc_id", searchHit.getId());
                     result.add(curMap);
@@ -286,7 +228,7 @@ public class QueryServiceImpl implements QueryService {
 
                 String scrollId = searchResponse.getScrollId();
 
-                while(searchHits != null && searchHits.length > 0) {
+                while(! ArrayUtils.isEmpty(searchHits)) {
                     SearchScrollRequest scrollRequest = new SearchScrollRequest(scrollId);
                     scrollRequest.scroll(scroll);
 
@@ -294,40 +236,34 @@ public class QueryServiceImpl implements QueryService {
                         searchResponse = this.client.scroll(scrollRequest, RequestOptions.DEFAULT);
                         scrollId = searchResponse.getScrollId();
                         searchHits = searchResponse.getHits().getHits();
-                        if (searchHits != null && searchHits.length > 0) {
-                            SearchHit[] var18 = searchHits;
-                            int var20 = searchHits.length;
 
-                            for(int var22 = 0; var22 < var20; ++var22) {
-                                SearchHit hit = var18[var22];
-                                Map<String, Object> curMap = hit.getSourceAsMap();
-                                if (curMap == null || curMap.keySet().size() != 0) {
-                                    curMap.put("doc_id", hit.getId());
-                                    result.add(curMap);
-                                }
+                        for(SearchHit hit : searchHits) {
+                            Map<String, Object> curMap = hit.getSourceAsMap();
+                            if (! CollectionUtils.isEmpty(curMap)) {
+                                curMap.put("doc_id", hit.getId());
+                                result.add(curMap);
                             }
                         }
-                    } catch (IOException var13) {
-                        this.log.error("es error", var13);
+
+                    } catch (IOException e) {
+                        log.error("es error", e);
                     }
                 }
 
                 ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
                 clearScrollRequest.addScrollId(scrollId);
                 ClearScrollResponse clearScrollResponse = this.client.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
-                boolean var21 = clearScrollResponse.isSucceeded();
-            } catch (IOException var14) {
-                this.log.error("es error", var14);
+
+            } catch (IOException e) {
+                log.error("es error", e);
             }
 
-            return result;
-        } else {
-            return result;
         }
+        return result;
     }
 
     public List<Map<String, Object>> scrollSearch(SearchRequest searchRequest, SearchSourceBuilder searchSourceBuilder, BoolQueryBuilder boolQueryBuilder, int from, int size) {
-        searchRequest.types(new String[]{"doc"});
+        searchRequest.types("doc");
         searchSourceBuilder.query(boolQueryBuilder);
         searchSourceBuilder.size(size);
         searchRequest.source(searchSourceBuilder);
@@ -336,43 +272,72 @@ public class QueryServiceImpl implements QueryService {
 
     public List<Map<String, Object>> scrollSearch(SearchRequest searchRequest, SearchSourceBuilder searchSourceBuilder, BoolQueryBuilder boolQueryBuilder, int size, String regNo) {
         searchSourceBuilder.query(boolQueryBuilder).size(size);
-        searchRequest.types(new String[]{"doc"}).routing(regNo).source(searchSourceBuilder);
+
+        searchRequest.types("doc")
+                .routing(regNo)
+                .source(searchSourceBuilder);
+
         return this.scrollSearch(searchRequest);
     }
 
     public List<Map<String, Object>> scrollSearch(SearchRequest searchRequest, SearchSourceBuilder searchSourceBuilder, BoolQueryBuilder boolQueryBuilder, int size, List<String> regNos) {
-        searchRequest.types(new String[]{"doc"});
-        searchRequest.source(searchSourceBuilder.size(size).query(boolQueryBuilder)).routing((String[])regNos.toArray(new String[0]));
+        searchRequest.types("doc");
+
+        searchRequest
+                .source(searchSourceBuilder
+                        .size(size)
+                        .query(boolQueryBuilder))
+                .routing(regNos
+                        .toArray(new String[0]));
+
         return this.scrollSearch(searchRequest);
     }
 
     public List<Map<String, Object>> scrollSearch(SearchRequest searchRequest, SearchSourceBuilder searchSourceBuilder, BoolQueryBuilder boolQueryBuilder, SortBuilder sortBuilder, int size, List<String> regNos) {
-        searchRequest.types(new String[]{"doc"});
-        searchRequest.source(searchSourceBuilder.size(size).query(boolQueryBuilder).sort(sortBuilder));
+        searchRequest.types("doc");
+
+        searchRequest
+                .source(searchSourceBuilder
+                        .size(size)
+                        .query(boolQueryBuilder)
+                        .sort(sortBuilder));
+
         return this.scrollSearch(searchRequest);
     }
 
-    private List<Map<String, Object>> scrollSearch(ElasticMethodInterface methodInterface, boolean isReturnAll, QueryBuilder queryBuilder, String[] fields, String... indices) {
-        List<Map<String, Object>> result = isReturnAll ? new ArrayList() : null;
+    /**
+     * 执行滚动查询
+     * @param methodInterface 结果处理方法接口
+     * @param isReturnAll 是否返回全部查询结果
+     * @param queryBuilder 条件构造器
+     * @param fields 过滤的源字段
+     * @param indices 索引数组
+     * @return
+     */
+    private List<Map<String, Object>> scrollSearch(ElasticMethodInterface<Map<String, Object>> methodInterface, boolean isReturnAll, QueryBuilder queryBuilder, String[] fields, String... indices) {
+
+        List<Map<String, Object>> result = isReturnAll ? new ArrayList<>() : null;
+        //启动搜索请求的滚动（数值为活动时间）
         Scroll scroll = new Scroll(TimeValue.timeValueMinutes(3L));
+        //获取查询条件
         SearchRequest searchRequest = this.getRequestForScroll(queryBuilder, fields, indices);
         searchRequest.scroll(scroll);
-        searchRequest.types(new String[]{"doc"});
+        searchRequest.types("doc");
 
         try {
             SearchResponse searchResponse = this.client.search(searchRequest, RequestOptions.DEFAULT);
             SearchHit[] searchHits = searchResponse.getHits().getHits();
-            SearchHit[] var11 = searchHits;
-            int var12 = searchHits.length;
 
-            for(int var13 = 0; var13 < var12; ++var13) {
-                SearchHit searchHit = var11[var13];
+            for(SearchHit searchHit : searchHits) {
                 Map<String, Object> curMap = searchHit.getSourceAsMap();
                 curMap.put("doc_id", searchHit.getId());
+
+                //利用methodInterface对查询结果数据进行处理
                 if (methodInterface != null) {
                     methodInterface.run(curMap);
                 }
 
+                //是否返回全部查询数据
                 if (isReturnAll) {
                     result.add(curMap);
                 }
@@ -380,59 +345,67 @@ public class QueryServiceImpl implements QueryService {
 
             String scrollId = searchResponse.getScrollId();
 
-            while(searchHits != null && searchHits.length > 0) {
+            //设置数据滚动
+            while(! ArrayUtils.isEmpty(searchHits)) {
                 SearchScrollRequest scrollRequest = new SearchScrollRequest(scrollId);
                 scrollRequest.scroll(scroll);
 
                 try {
                     searchResponse = this.client.scroll(scrollRequest, RequestOptions.DEFAULT);
                     scrollId = searchResponse.getScrollId();
-                    searchHits = searchResponse.getHits().getHits();
-                    if (searchHits != null && searchHits.length > 0) {
-                        SearchHit[] var23 = searchHits;
-                        int var25 = searchHits.length;
 
-                        for(int var27 = 0; var27 < var25; ++var27) {
-                            SearchHit hit = var23[var27];
-                            Map<String, Object> curMap = hit.getSourceAsMap();
-                            if (curMap == null || curMap.keySet().size() != 0) {
-                                curMap.put("doc_id", hit.getId());
-                                if (methodInterface != null) {
-                                    methodInterface.run(curMap);
-                                }
+                    for(SearchHit hit : searchResponse.getHits().getHits()) {
+                        Map<String, Object> curMap = hit.getSourceAsMap();
 
-                                if (isReturnAll) {
-                                    result.add(curMap);
-                                }
+                        if (! CollectionUtils.isEmpty(curMap)) {
+                            curMap.put("doc_id", hit.getId());
+
+                            if (methodInterface != null) {
+                                methodInterface.run(curMap);
+                            }
+
+                            if (isReturnAll) {
+                                result.add(curMap);
                             }
                         }
                     }
-                } catch (IOException var18) {
-                    this.log.error("es error", var18);
+
+                } catch (IOException e) {
+                    log.error("es error", e);
                 }
             }
 
+            //清楚该滚动搜索请求
             ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
             clearScrollRequest.addScrollId(scrollId);
             ClearScrollResponse clearScrollResponse = this.client.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
-            boolean var26 = clearScrollResponse.isSucceeded();
-        } catch (InterruptedException | IOException var19) {
-            this.log.error("es error", var19);
+
+        } catch (InterruptedException | IOException e) {
+            log.error("es error", e);
         }
 
         return result;
     }
 
+    /**
+     * 获取滚动请求
+     * @param queryBuilder 条件构造器
+     * @param fields 过滤的源字段
+     * @param indices 索引数组
+     * @return
+     */
     private SearchRequest getRequestForScroll(QueryBuilder queryBuilder, String[] fields, String... indices) {
         SearchRequest searchRequest = new SearchRequest(indices);
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.query(queryBuilder);
         searchSourceBuilder.size(5000);
+
+        //设置查询字段
         if (fields != null && fields.length != 0) {
-            searchSourceBuilder.fetchSource(fields, (String[])null);
+            searchSourceBuilder.fetchSource(fields, null);
         }
 
-        searchRequest.types(new String[]{"doc"});
+        searchRequest.types("doc");
         searchRequest.source(searchSourceBuilder);
         return searchRequest;
     }
