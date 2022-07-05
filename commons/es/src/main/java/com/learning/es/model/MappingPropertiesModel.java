@@ -11,8 +11,14 @@ import java.util.List;
  */
 public class MappingPropertiesModel {
 
+    /**
+     * 字段元数据列表
+     */
     private List<BaseFieldMetadata> metadata = new ArrayList<>();
 
+    /**
+     * 关联字段对象
+     */
     private JoinFieldMetadata joinFieldMetadata = new JoinFieldMetadata();
 
     public MappingPropertiesModel() {

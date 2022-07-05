@@ -1,9 +1,12 @@
-package com.learning.es.model;
+package com.learning.es.model.condition;
 
 import com.learning.core.exception.SpringBootException;
 import com.learning.es.constants.ElasticConst;
 import com.learning.es.enums.AnalyzerEnum;
+import com.learning.es.enums.LogicEnum;
 import com.learning.es.enums.RelativeTypeEnum;
+import com.learning.es.model.CRFFieldInfo;
+import com.learning.es.model.FieldItemInfo;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
@@ -68,34 +71,32 @@ public class ConditionBuildBase {
     }
 
     /**
-     * 创建bool query
-     *
-     * @param queryBuilders
-     * @param logicText
+     * 创建布尔查询条件
+     * @param queryBuilders 查询构造器列表
+     * @param logic 逻辑名称
      * @return
      */
-    public static QueryBuilder createBoolQuery(List<QueryBuilder> queryBuilders, String logicText) {
+    public static QueryBuilder createBoolQuery(List<QueryBuilder> queryBuilders, LogicEnum logic) {
         if (queryBuilders == null || queryBuilders.size() == 0) {
             return null;
         } else if (queryBuilders.size() == 1) {
             return queryBuilders.get(0);
         } else {
             BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-            logicText = logicText.toLowerCase();
 
             for (QueryBuilder queryBuilder : queryBuilders) {
                 if (queryBuilder == null) {
                     continue;
                 }
-                switch (logicText) {
-                    case "and":
+                switch (logic) {
+                    case AND:
                         boolQueryBuilder.must(queryBuilder);
                         break;
-                    case "or":
+                    case OR:
                         boolQueryBuilder.should(queryBuilder);
                         break;
                     // not 需要注意的是必须加上docType类型过滤，否则会返回
-                    case "not":
+                    case NOT:
                         boolQueryBuilder.mustNot(queryBuilder);
                         break;
                     // 默认按or
@@ -152,25 +153,35 @@ public class ConditionBuildBase {
     }
 
     /**
-     * 创建
-     *
-     * @param itemInfo
-     * @param relativeCode
-     * @param start
+     * 创建查询构造对象
+     * @param itemInfo 字段信息
+     * @param relativeCode 关联词编码
+     * @param start 下限值
+     * @param end 上限值
      * @return
      */
-    public static QueryBuilder createItemQuery(FieldItemInfo itemInfo, String relativeCode, Object start, Object end) {
+    public static QueryBuilder createItemQuery(
+            FieldItemInfo itemInfo,
+            String relativeCode,
+            Object start,
+            Object end
+    ) {
+
         if (relativeCode == null) {
             throw new SpringBootException("关系词不能为空，请检查");
         }
+
         if (start == null) {
             start = "";
         }
+
         String typeName = itemInfo.getTypeName();
         CRFFieldInfo crfFieldInfo = itemInfo.getCrf();
+
         if (crfFieldInfo == null) {
             throw new SpringBootException("CRF表单字段信息不能为空，请检查");
         }
+
         String formGuid = crfFieldInfo.getFormGuid();
         String fieldName = itemInfo.getFieldCode();
         relativeCode = relativeCode.toLowerCase();
@@ -178,14 +189,16 @@ public class ConditionBuildBase {
 
         RelativeTypeEnum relativeTypeEnum = RelativeTypeEnum.getByCode(relativeCode);
         QueryBuilder queryBuilder = null;
+
         if (relativeTypeEnum == null) {
             return null;
         }
 
+        //设置关联词
         switch (relativeTypeEnum) {
             // 等于
             case EQUAL:
-                if (!ElasticConst.ELASTIC_FIELD_PATIENT.equals(typeName)){
+                if (! ElasticConst.ELASTIC_FIELD_PATIENT.equals(typeName)){
                     // 精确查询用".keyword"
                     fieldName = fieldName + ".keyword";
                 }
@@ -239,7 +252,9 @@ public class ConditionBuildBase {
                 start = start.toString().toLowerCase();
                 MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery(fieldName, start)
                         .operator(Operator.AND)
+                        //最大匹配为90%
                         .minimumShouldMatch("90%")
+                        //设置字段分析器为IK_MAX_WORD
                         .analyzer(AnalyzerEnum.IK_MAX_WORD.getCode());
                 BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
                 boolQueryBuilder.mustNot(matchQueryBuilder);
@@ -256,7 +271,9 @@ public class ConditionBuildBase {
                 break;
             // 开区间
             case BTEWEENT_OPEN:
-                RangeQueryBuilder rangeEndQueryBuilder = QueryBuilders.rangeQuery(fieldName).gt(start);
+                RangeQueryBuilder rangeEndQueryBuilder = QueryBuilders
+                        .rangeQuery(fieldName)
+                        .gt(start);
                 if (end != null) {
                     rangeEndQueryBuilder.lt(end);
                 }
@@ -264,7 +281,9 @@ public class ConditionBuildBase {
                 break;
             // 左开右闭
             case BTEWEENT_LEFT:
-                RangeQueryBuilder rangeLeftQueryBuilder = QueryBuilders.rangeQuery(fieldName).gt(start);
+                RangeQueryBuilder rangeLeftQueryBuilder = QueryBuilders
+                        .rangeQuery(fieldName)
+                        .gt(start);
                 if (end != null) {
                     rangeLeftQueryBuilder.lte(end);
                 }
@@ -272,24 +291,45 @@ public class ConditionBuildBase {
                 break;
             // 左闭右开
             case BTEWEENT_RIGHT:
-                RangeQueryBuilder rangeRightQueryBuilder = QueryBuilders.rangeQuery(fieldName).gte(start);
+                RangeQueryBuilder rangeRightQueryBuilder = QueryBuilders
+                        .rangeQuery(fieldName)
+                        .gte(start);
                 if (end != null) {
                     rangeRightQueryBuilder.lt(end);
                 }
                 queryBuilder = rangeRightQueryBuilder;
                 break;
-            // 字段值不为空查询
-            case IS_NULL:
-                queryBuilder = QueryBuilders.boolQuery().mustNot(QueryBuilders.existsQuery(fieldName));
-                break;
             // 字段值为空查询
+            case IS_NULL:
+                queryBuilder = QueryBuilders
+                        .boolQuery()
+                        .mustNot(QueryBuilders.existsQuery(fieldName));
+                break;
+            // 字段值不为空查询
             case NOT_NULL:
                 BoolQueryBuilder bool1;
+
                 // 加上表过滤
                 if (ElasticConst.ELASTIC_FIELD_CRF.equals(typeName)){
-                    bool1 = QueryBuilders.boolQuery().filter(QueryBuilders.termQuery(ElasticConst.ELASTIC_FIELD_FORM_GUID, formGuid));
+                    bool1 = QueryBuilders
+                            .boolQuery()
+                            .filter(
+                                    QueryBuilders
+                                            .termQuery(
+                                                    ElasticConst.ELASTIC_FIELD_FORM_GUID,
+                                                    formGuid
+                                            )
+                            );
                 }else {
-                    bool1 = QueryBuilders.boolQuery().filter(QueryBuilders.termQuery(ElasticConst.ELASTIC_FIELD_JION_FIELD, typeName));
+                    bool1 = QueryBuilders
+                            .boolQuery()
+                            .filter(
+                                    QueryBuilders
+                                            .termQuery(
+                                                    ElasticConst.ELASTIC_FIELD_JION_FIELD,
+                                                    typeName
+                                            )
+                            );
                 }
                 queryBuilder = bool1.must(QueryBuilders.existsQuery(fieldName));
                 break;
@@ -305,7 +345,6 @@ public class ConditionBuildBase {
 
     /**
      * 构建全文检索QueryString查询
-     *
      * @param queryString
      * @param fields
      * @return

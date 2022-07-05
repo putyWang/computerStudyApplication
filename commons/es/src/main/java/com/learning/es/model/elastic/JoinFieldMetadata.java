@@ -7,20 +7,32 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * 字段元数据
+ * 链接字段元数据
  */
 public class JoinFieldMetadata {
+    /**
+     *
+     */
     private final static String N = "join";
-    private String type;
 
-    private String joinField;
+    /**
+     * 字段类型
+     */
+    private final String type;
+
+    /**
+     * 链接字段名
+     */
+    private final String joinField;
 
     /**
      * 构建全局序号
      */
     private boolean eagerGlobalOrdinals;
 
-
+    /**
+     * 关系数组
+     */
     private Map<String, ArrayList<String>> relations;
 
     public JoinFieldMetadata() {

@@ -2,12 +2,33 @@ package com.learning.es.model.condition;
 
 import java.io.Serializable;
 
-public final class FilterQuery implements Serializable {
+/**
+ *
+ */
+public final class FilterQuery
+        implements Serializable {
+
     private static final long serialVersionUID = 1L;
+    /**
+     * 字段名称
+     */
     private String field;
+    /**
+     * 字段类型
+     */
     private String type;
+    /**
+     * 范围查询起始值
+     * 精确查询的值
+     */
     private String start;
+    /**
+     * 范围查询终点值
+     */
     private String end;
+    /**
+     * 查询类型
+     */
     private String queryType;
 
     public FilterQuery() {

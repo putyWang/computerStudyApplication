@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.learning.core.exception.SpringBootException;
 import com.learning.es.clients.RestClientFactory;
 import com.learning.es.service.ClusterService;
+import com.learning.es.service.EsServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.util.EntityUtils;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
@@ -15,22 +16,16 @@ import java.io.IOException;
 import java.util.Map;
 
 @Log4j2
-public class ClusterServiceImpl implements ClusterService {
-
-    protected RestHighLevelClient client;
-    protected RestClient restClient;
+public class ClusterServiceImpl
+        extends EsServiceImpl
+        implements ClusterService {
 
     /**
      * 注入相应的es链接
      * @param restClientFactory es链接工厂类
      */
     public ClusterServiceImpl(RestClientFactory restClientFactory) {
-        if (restClientFactory == null) {
-            throw new SpringBootException("ES RestClient 为空， 请检查ES连接");
-        } else {
-            this.client = restClientFactory.getRestHighLevelClient();
-            this.restClient = restClientFactory.getRestClient();
-        }
+        super(restClientFactory);
     }
 
     /**

@@ -2,7 +2,7 @@ package com.learning.es;
 
 import com.learning.es.clients.RestClientFactory;
 import com.learning.es.service.*;
-import com.learning.es.service.impl.QueryServiceImpl;
+import com.learning.es.service.impl.*;
 
 public final class ElasticManager {
     private static ElasticManager instance = null;

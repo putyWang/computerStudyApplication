@@ -4,7 +4,7 @@ import com.learning.es.bean.AdvancedSearchResult;
 import com.learning.es.bean.FulltextSearchResult;
 import com.learning.es.bean.SearchResult;
 import com.learning.es.constants.ElasticMethodInterface;
-import com.learning.es.model.ConditionBuilder;
+import com.learning.es.model.condition.ConditionBuilder;
 import com.learning.es.model.QuickConditionBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 
@@ -12,7 +12,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface SearchService  {
-    FulltextSearchResult quickSearch(QuickConditionBuilder var1, int var2, int var3, String... var4);
+    /**
+     *
+     * @param conditionBuilder
+     * @param page
+     * @param size
+     * @param indices
+     * @return
+     */
+    FulltextSearchResult quickSearch(QuickConditionBuilder conditionBuilder, int page, int size, String... indices);
 
     AdvancedSearchResult advancedSearch(ConditionBuilder var1, int var2, int var3, String... var4) throws Exception;
 

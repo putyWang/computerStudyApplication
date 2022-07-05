@@ -7,6 +7,7 @@ import com.learning.core.utils.CollectionUtils;
 import com.learning.es.bean.SearchResult;
 import com.learning.es.clients.RestClientFactory;
 import com.learning.es.constants.ElasticMethodInterface;
+import com.learning.es.service.EsServiceImpl;
 import com.learning.es.service.QueryService;
 import lombok.extern.log4j.Log4j2;
 import org.elasticsearch.action.search.*;
@@ -35,21 +36,16 @@ import java.util.List;
 import java.util.Map;
 
 @Log4j2
-public class QueryServiceImpl implements QueryService {
-    protected RestHighLevelClient client;
-    protected RestClient restClient;
+public class QueryServiceImpl
+        extends EsServiceImpl
+        implements QueryService {
 
     /**
      * 注入es链接
      * @param restClientFactory es链接工厂类
      */
     public QueryServiceImpl(RestClientFactory restClientFactory) {
-        if (restClientFactory == null) {
-            throw new SpringBootException("ES RestClient 为空， 请检查ES连接");
-        } else {
-            this.client = restClientFactory.getRestHighLevelClient();
-            this.restClient = restClientFactory.getRestClient();
-        }
+        super(restClientFactory);
     }
 
     public long count(QueryBuilder queryBuilder, String... indices) {

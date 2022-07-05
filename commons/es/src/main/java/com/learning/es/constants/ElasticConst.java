@@ -77,4 +77,6 @@ public class ElasticConst {
 
     public static String ELASTIC_ATTACH_FIELD_UPLOAD_TIME = "attach_upload_time";
 
+
+    public static String ELASTIC_DEFAULT_CHAR_SET = "UTF-8";
 }

@@ -14,6 +14,9 @@ public class TextFieldMetadata extends BaseFieldMetadata {
      */
     private String analyzer;
 
+    /**
+     * 是否创建关键词
+     */
     private boolean createKeyword;
 
     /**

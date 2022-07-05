@@ -1,23 +1,22 @@
 package com.learning.es.service.impl;
 
-import com.learning.core.exception.SpringBootException;
 import com.learning.es.bean.AdvancedSearchResult;
 import com.learning.es.bean.FulltextSearchResult;
 import com.learning.es.bean.HighWeight;
 import com.learning.es.bean.SearchResult;
 import com.learning.es.clients.RestClientFactory;
-import com.learning.es.model.ConditionBuilder;
+import com.learning.es.model.condition.ConditionBuilder;
 import com.learning.es.model.ConfigProperties;
 import com.learning.es.model.QuickConditionBuilder;
 import com.learning.es.model.condition.PropertyMapper;
+import com.learning.es.service.EsServiceImpl;
 import com.learning.es.service.QueryService;
 import com.learning.es.service.SearchService;
 import com.learning.es.utils.DesensitiseUtil;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
@@ -28,30 +27,25 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.naming.spi.DirStateFactory;
 import java.util.*;
 
-public class SearchServiceImpl implements SearchService {
+@Log4j2
+public class SearchServiceImpl
+        extends EsServiceImpl
+        implements SearchService {
+
     private QueryService queryService;
 
-    private static final Logger log = LoggerFactory.getLogger(IndexServiceImpl.class);
-
-    protected RestHighLevelClient client;
-    protected RestClient restClient;
-
+    /**
+     * 注入对应的es链接
+     * @param restClientFactory es链接工厂类
+     */
     public SearchServiceImpl(RestClientFactory restClientFactory) {
-        if (restClientFactory == null) {
-            throw new SpringBootException("ES RestClient 为空， 请检查ES连接");
-        } else {
-            this.client = restClientFactory.getRestHighLevelClient();
-            this.restClient = restClientFactory.getRestClient();
-        }
-
-        this.queryService = new QueryServiceImpl(restClientFactory);
+        super(restClientFactory);
+        queryService = new QueryServiceImpl(restClientFactory);
     }
+
 
     public FulltextSearchResult quickSearch(QuickConditionBuilder conditionBuilder, int page, int size, String... indices) {
         QueryStringQueryBuilder queryBuilder = conditionBuilder.getQueryStringQueryBuilder();

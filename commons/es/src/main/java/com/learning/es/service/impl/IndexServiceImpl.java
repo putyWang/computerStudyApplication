@@ -3,15 +3,16 @@ package com.learning.es.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.learning.core.exception.SpringBootException;
 import com.learning.es.bean.IndicesStatusLocal;
 import com.learning.es.clients.RestClientFactory;
+import com.learning.es.constants.ElasticConst;
 import com.learning.es.enums.ESFieldTypeEnum;
 import com.learning.es.model.ConfigProperties;
 import com.learning.es.model.elastic.ElasticFieldType;
 import com.learning.es.model.MappingPropertiesModel;
 import com.learning.es.model.SettingModel;
 import com.learning.es.model.elastic.*;
+import com.learning.es.service.EsServiceImpl;
 import com.learning.es.service.IndexService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -32,22 +33,14 @@ import java.util.*;
 
 @Log4j2
 public class IndexServiceImpl
+        extends EsServiceImpl
         implements IndexService {
-
-    protected RestHighLevelClient client;
-    protected RestClient restClient;
-
     /**
      * 通过es链接工厂类创建索引服务类
      * @param restClientFactory es链接工厂类
      */
     public IndexServiceImpl(RestClientFactory restClientFactory) {
-        if (restClientFactory == null) {
-            throw new SpringBootException("ES RestClient 为空， 请检查ES连接");
-        } else {
-            this.client = restClientFactory.getRestHighLevelClient();
-            this.restClient = restClientFactory.getRestClient();
-        }
+        super(restClientFactory);
     }
 
     public String refreshIndex(String... indices)
@@ -65,7 +58,7 @@ public class IndexServiceImpl
         Response response = this.restClient.performRequest(request);
 
         //将查询结果转化为字符串
-        return EntityUtils.toString(response.getEntity(), "UTF-8");
+        return EntityUtils.toString(response.getEntity(), ElasticConst.ELASTIC_DEFAULT_CHAR_SET);
     }
 
     public String getSetting(String... indices)
@@ -82,7 +75,7 @@ public class IndexServiceImpl
         Request request = new Request("GET", search);
         Response response = this.restClient.performRequest(request);
 
-        return EntityUtils.toString(response.getEntity(), "UTF-8");
+        return EntityUtils.toString(response.getEntity(), ElasticConst.ELASTIC_DEFAULT_CHAR_SET);
     }
 
     /**
@@ -104,7 +97,7 @@ public class IndexServiceImpl
         Request request = new Request("GET", search);
         Response response = this.restClient.performRequest(request);
 
-        return EntityUtils.toString(response.getEntity(), "UTF-8");
+        return EntityUtils.toString(response.getEntity(), ElasticConst.ELASTIC_DEFAULT_CHAR_SET);
     }
 
     public Boolean updateSettings(Map<String, Object> settingsMap, String... indices) {
@@ -123,7 +116,10 @@ public class IndexServiceImpl
         }
     }
 
-    public Boolean addField(String index, ElasticFieldType... elasticFieldTypes) {
+    public Boolean addField(
+            String index,
+            ElasticFieldType... elasticFieldTypes
+    ) {
         String responseBody = "";
         String endPoint = index + "/_mapping/" + "doc";
 
@@ -132,8 +128,15 @@ public class IndexServiceImpl
             String mappingStr = Strings.toString(mapping);
             Request request = new Request("PUT", endPoint);
             request.setEntity(new NStringEntity(mappingStr, ContentType.APPLICATION_JSON));
-            Response response = this.restClient.performRequest(request);
-            responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
+            Response response = this
+                    .restClient
+                    .performRequest(request);
+            responseBody = EntityUtils
+                    .toString(
+                            response.getEntity(),
+                            ElasticConst.ELASTIC_DEFAULT_CHAR_SET
+                    );
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -197,9 +200,14 @@ public class IndexServiceImpl
 
                 String jsonString = JSON.toJSONString(map);
                 Request request = new Request("PUT", index);
-                request.setEntity(new NStringEntity(jsonString, ContentType.APPLICATION_JSON));
+                request.setEntity(
+                        new NStringEntity(
+                                jsonString,
+                                ContentType.APPLICATION_JSON
+                        )
+                );
                 Response response = this.restClient.performRequest(request);
-                responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
+                responseBody = EntityUtils.toString(response.getEntity(), ElasticConst.ELASTIC_DEFAULT_CHAR_SET);
             } catch (IOException e) {
                 log.error("ES创建索引错误,", e);
             }
@@ -217,7 +225,11 @@ public class IndexServiceImpl
      * @param properties 字段设置
      * @return
      */
-    public boolean createIndex(String index, SettingModel setting, MappingPropertiesModel properties) {
+    public boolean createIndex(
+            String index,
+            SettingModel setting,
+            MappingPropertiesModel properties
+    ) {
         boolean flag = true;
         if (this.indexExists(index)) {
             return true;
@@ -241,7 +253,7 @@ public class IndexServiceImpl
                 Request request = new Request("PUT", index);
                 request.setEntity(new NStringEntity("{\"settings\":" + settingJson + mappingJson + "}", ContentType.APPLICATION_JSON));
                 Response response = this.restClient.performRequest(request);
-                responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
+                responseBody = EntityUtils.toString(response.getEntity(), ElasticConst.ELASTIC_DEFAULT_CHAR_SET);
             } catch (IOException e) {
                 log.error("ES创建索引错误,", e);
             }
@@ -279,7 +291,7 @@ public class IndexServiceImpl
                 Request request = new Request("PUT", index);
                 request.setEntity(new NStringEntity(jsonString, ContentType.APPLICATION_JSON));
                 Response response = this.restClient.performRequest(request);
-                responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
+                responseBody = EntityUtils.toString(response.getEntity(), ElasticConst.ELASTIC_DEFAULT_CHAR_SET);
             } catch (IOException e) {
                 log.error("创建es-monitor索引失败", e);
             }
@@ -321,7 +333,9 @@ public class IndexServiceImpl
      * @return
      * @throws IOException
      */
-    public List<IndicesStatusLocal> getIndices(String indexName) throws IOException {
+    public List<IndicesStatusLocal> getIndices(String indexName)
+            throws IOException {
+
         List<IndicesStatusLocal> indicesStatLocals = new ArrayList<>();
         //拼接查询字符串
         String search = "/_cat/indices/";
@@ -334,7 +348,7 @@ public class IndexServiceImpl
         //设置请求
         Request request = new Request("GET", search);
         Response response = this.restClient.performRequest(request);
-        String responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
+        String responseBody = EntityUtils.toString(response.getEntity(), ElasticConst.ELASTIC_DEFAULT_CHAR_SET);
         String k = "[ ]";
         String line = "\n";
         //结果非空
@@ -370,7 +384,7 @@ public class IndexServiceImpl
 
         try {
             Response response = this.restClient.performRequest(request);
-            responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
+            responseBody = EntityUtils.toString(response.getEntity(), ElasticConst.ELASTIC_DEFAULT_CHAR_SET);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -665,7 +679,10 @@ public class IndexServiceImpl
      * @throws IOException
      */
     private XContentBuilder getFieldMapping(ElasticFieldType... elasticFieldTypes) throws IOException {
-        XContentBuilder builder = XContentFactory.jsonBuilder().startObject();
+        XContentBuilder builder = XContentFactory
+                .jsonBuilder()
+                .startObject();
+
         builder = this.buildFieldMapping(builder, elasticFieldTypes);
         builder.endObject();
         return builder;
@@ -678,23 +695,39 @@ public class IndexServiceImpl
      * @return
      * @throws IOException
      */
-    private XContentBuilder buildFieldMapping(XContentBuilder builder, ElasticFieldType... elasticFieldTypes) throws IOException {
+    private XContentBuilder buildFieldMapping(
+            XContentBuilder builder,
+            ElasticFieldType... elasticFieldTypes
+    )
+            throws IOException {
         if (elasticFieldTypes != null && elasticFieldTypes.length != 0) {
             //设置json开头
             builder.startObject("properties");
 
             for(ElasticFieldType elasticFieldType : elasticFieldTypes) {
 
-                if (StringUtils.isEmpty(elasticFieldType.getFieldName()) || StringUtils.isEmpty(elasticFieldType.getFieldType())) {
+                if (StringUtils
+                        .isEmpty(
+                                elasticFieldType
+                                        .getFieldName()
+                        )
+                        || StringUtils
+                        .isEmpty(
+                                elasticFieldType
+                                        .getFieldType()
+                        )) {
                     return null;
                 }
 
                 //获取嵌套ES字段名称及类型
                 List<ElasticFieldType> child = elasticFieldType.getChild();
                 //获取字段类型
-                String fieldType = elasticFieldType.getFieldType().toLowerCase();
+                String fieldType = elasticFieldType
+                        .getFieldType()
+                        .toLowerCase();
                 //获取字段名称
-                String fieldName = elasticFieldType.getFieldName();
+                String fieldName = elasticFieldType
+                        .getFieldName();
                 //获取字段类型对应的枚举
                 ESFieldTypeEnum fieldTypeEnum = ESFieldTypeEnum
                         .enumMap
@@ -707,11 +740,16 @@ public class IndexServiceImpl
                         case TEXT:
                             TextFieldMetadata textFieldMetadata = new TextFieldMetadata(fieldName);
                             builder.startObject(textFieldMetadata.getName());
+                            //默认类型为text
                             builder.field("type", textFieldMetadata.getType());
+                            //获取索引分析器，默认ik_max_word
                             builder.field("analyzer", textFieldMetadata.getAnalyzer());
+                            //获取搜索时分词器，默认使用analyzer
                             builder.field("search_analyzer", textFieldMetadata.getSearchAnalyzer());
                             builder.field("index_options", "offsets");
-                            if (textFieldMetadata.getCreateKeyword() || textFieldMetadata.getName().equals(ConfigProperties.getKey("es.query.field.lisitem.format"))) {
+
+                            //判断字段中是否需要额外映射一个keyword字段，来进行排序、聚合和脚本操作；
+                            if (textFieldMetadata.getCreateKeyword()) {
                                 builder.startObject("fields");
                                 builder.startObject("keyword");
                                 builder.field("type", "keyword");
@@ -733,15 +771,16 @@ public class IndexServiceImpl
                             DateFieldMetadata dateFieldMetadata = new DateFieldMetadata(fieldName);
                             builder.startObject(dateFieldMetadata.getName());
                             builder.field("type", dateFieldMetadata.getType());
+                            //固定"yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||yyyy-MM-dd HH:mm||epoch_millis"格式
                             builder.field("format", dateFieldMetadata.getFormat());
-                            builder.field("ignore_malformed", true);
+                            builder.field("ignore_malformed", dateFieldMetadata.isIgnoreMalformed());
                             builder.endObject();
                             break;
                         case NUMBER:
-                            NumberFieldMetadata integetFieldMetadata = new NumberFieldMetadata(fieldName);
-                            builder.startObject(integetFieldMetadata.getName());
-                            builder.field("type", integetFieldMetadata.getType());
-                            builder.field("ignore_malformed", true);
+                            NumberFieldMetadata integerFieldMetadata = new NumberFieldMetadata(fieldName);
+                            builder.startObject(integerFieldMetadata.getName());
+                            builder.field("type", integerFieldMetadata.getType());
+                            builder.field("ignore_malformed", integerFieldMetadata.isIgnoreMalformed());
                             builder.endObject();
                             break;
                         case OBJECT:
@@ -749,7 +788,10 @@ public class IndexServiceImpl
                             builder.startObject(objectFieldMetadata.getName());
                             builder.field("type", objectFieldMetadata.getType());
                             if (child != null && child.size() > 0) {
-                                builder = this.buildFieldMapping(builder, child.toArray(new ElasticFieldType[0]));
+                                builder = this.buildFieldMapping(
+                                        builder,
+                                        child.toArray(new ElasticFieldType[0])
+                                );
                             }
 
                             builder.endObject();

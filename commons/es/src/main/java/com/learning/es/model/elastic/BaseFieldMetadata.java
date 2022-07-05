@@ -11,6 +11,9 @@ public class BaseFieldMetadata {
      */
     private double boost = 1.0;
 
+    /**
+     * 空值特殊表示
+     */
     private Object nullValue;
 
     protected BaseFieldMetadata(String type) {
