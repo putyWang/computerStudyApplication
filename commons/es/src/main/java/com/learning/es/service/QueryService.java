@@ -19,7 +19,7 @@ import java.util.Map;
 public interface QueryService {
 
     /**
-     * 获取索引计数
+     * 获取索引中的包含的数据量
      * @param queryBuilder
      * @param indices 索引数组
      * @return
@@ -93,14 +93,14 @@ public interface QueryService {
     SearchHits searchForHits(SearchSourceBuilder sourceBuilder, HighlightBuilder highlightBuilder, int from, int size, String... indices);
 
     /**
-     * 获取查询的数据
+     * 执行查询请求
      * @param searchRequest 查询请求
      * @return
      */
     SearchHits searchForHits(SearchRequest searchRequest);
 
     /**
-     * 获取多条件查询结果
+     * 根据查询条件获取查询结果
      * @param searchRequest 查询请求
      * @param sourceBuilder 查询条件构造器
      * @param boolQueryBuilder 联合查询构造器

@@ -35,7 +35,7 @@ public class SearchServiceImpl
         extends EsServiceImpl
         implements SearchService {
 
-    private QueryService queryService;
+    private final QueryService queryService;
 
     /**
      * 注入对应的es链接

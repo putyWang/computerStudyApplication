@@ -1,5 +1,7 @@
 package com.learning.es.model.condition;
 
+import com.learning.es.enums.QueryTypeEnum;
+
 import java.io.Serializable;
 
 /**
@@ -29,7 +31,7 @@ public final class FilterQuery
     /**
      * 查询类型
      */
-    private String queryType;
+    private QueryTypeEnum queryType;
 
     public FilterQuery() {
     }
@@ -50,7 +52,7 @@ public final class FilterQuery
         return this.end;
     }
 
-    public String getQueryType() {
+    public QueryTypeEnum getQueryType() {
         return this.queryType;
     }
 
@@ -70,7 +72,7 @@ public final class FilterQuery
         this.end = end;
     }
 
-    public void setQueryType(String queryType) {
+    public void setQueryType(QueryTypeEnum queryType) {
         this.queryType = queryType;
     }
 

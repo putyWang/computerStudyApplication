@@ -162,7 +162,6 @@ public class ConditionBuilder {
 
             List<QueryBuilder> bqbs = null;
 
-            //
             if (level == 1) {
                 bqbs = mapper.getRootQuery(
                         this.childParentMap,

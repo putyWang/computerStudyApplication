@@ -13,21 +13,44 @@ import java.util.Map;
  */
 public interface DocumentService {
 
-    void bulk(String var1, List<Map<String, Object>> var2);
+    /**
+     * 构造批量查插入请求
+     * @param index 索引
+     * @param actions 批量对应的操作数组
+     */
+    void bulk(String index, List<Map<String, Object>> actions);
 
-    void bulkByQuery(String var1, String var2, ConditionBuilder var3, ConditionBuilder var4, QueryBuilder var5);
+    /**
+     * 批量从原索引迁移文档到目标索引
+     * @param sourceIndex 源索引
+     * @param destIndex 目标索引
+     * @param bringInto 查询中必须包含的项
+     * @param rulingOut 查询中肯定不包含的项
+     * @param dateQuery 数据查询构造器
+     */
+    void bulkByQuery(
+            String sourceIndex,
+            String destIndex,
+            ConditionBuilder bringInto,
+            ConditionBuilder rulingOut,
+            QueryBuilder dateQuery
+    );
 
-    void bulkByCaseIds(String var1, String var2, List<String> var3);
+    /**
+     * 根据jsonString与文档id更新文档
+     * @param index 索引
+     * @param docId 文档id
+     * @param routing 分片
+     * @param jsonString 更新对象的json字符串
+     */
+    void updateByDocId(String index, String docId, String routing, String jsonString);
 
-    void bulkByCaseIds(String var1, String var2, List<String> var3, String var4, String var5);
-
-    void bulkByCaseIds(ElasticMethodInterface var1, String var2, String var3, List<String> var4, String var5, String var6);
-
-    void updateByDocId(String var1, String var2, String var3, String var4);
-
-    void updateByDocId(String var1, String var2, String var3, Map var4);
-
-    void updateCRFFillData(String var1, String var2, String var3, String var4, String var5);
-
-    void updateCRFFillDatas(String var1, List<ElasticCRFFillData> var2);
+    /**
+     * 根据dataMap与文档id更新文档
+     * @param index 索引
+     * @param docId 文档id
+     * @param routing 分片
+     * @param data 更新对象的dataMap
+     */
+    void updateByDocId(String index, String docId, String routing, Map<String, Object> data);
 }

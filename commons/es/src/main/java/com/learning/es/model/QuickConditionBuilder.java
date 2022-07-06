@@ -2,6 +2,8 @@ package com.learning.es.model;
 
 import com.learning.core.utils.StringUtils;
 import com.learning.es.enums.ESFieldTypeEnum;
+import com.learning.es.enums.LogicEnum;
+import com.learning.es.enums.QueryTypeEnum;
 import com.learning.es.model.condition.ConditionBuildBase;
 import com.learning.es.model.condition.FilterQuery;
 import com.learning.es.model.condition.PropertyMapper;
@@ -63,7 +65,13 @@ public final class QuickConditionBuilder
      */
     private transient HighlightBuilder highlightBuilder;
 
-    private QuickConditionBuilder(String index, String queryString, List<FilterQuery> filterQuery, Map<String, List<PropertyMapper>> fields, Map<String, PropertyMapper> textMapper) {
+    private QuickConditionBuilder(
+            String index,
+            String queryString,
+            List<FilterQuery> filterQuery,
+            Map<String, List<PropertyMapper>> fields,
+            Map<String, PropertyMapper> textMapper
+    ) {
         this.index = index;
         this.queryString = queryString;
         this.fields = fields;
@@ -78,7 +86,7 @@ public final class QuickConditionBuilder
         List<String> curFields = new ArrayList<>();
         BoolQueryBuilder secondBool = new BoolQueryBuilder();
         String filterField = null;
-        //搜索构造器列表
+        //查询构造器列表
         List<QueryBuilder> docTypeQuery = new ArrayList<>();
 
         if (this.filtersQueries != null && this.filtersQueries.size() > 0) {
@@ -90,7 +98,9 @@ public final class QuickConditionBuilder
             //第三层查询条件
             List<QueryBuilder> thirdLevel = new ArrayList<>();
 
-            Iterator<FilterQuery> it = this.filtersQueries.iterator();
+            Iterator<FilterQuery> it = this
+                    .filtersQueries
+                    .iterator();
 
             label142:
             while(true) {
@@ -100,156 +110,98 @@ public final class QuickConditionBuilder
                 QueryBuilder query;
 
                 //构造查询器
-                while(true) {
+                label143:
+                while (true) {
                     FilterQuery filterQuery;
 
                     //循环到start有值时，对查询构造器进行构造
                     do {
-                        if (! it.hasNext()) {
+                        if (!it.hasNext()) {
                             QueryBuilder oBool;
                             if (oneLevel.size() > 0) {
-                                oBool = createBoolQuery(oneLevel, "and");
+                                oBool = createBoolQuery(oneLevel, LogicEnum.AND);
                                 filterBool.should(oBool);
                             }
 
                             if (secondLevel.size() > 0) {
-                                oBool = createBoolQuery(secondLevel, "and");
+                                oBool = createBoolQuery(secondLevel, LogicEnum.AND);
                                 filterBool.should(oBool);
                             }
 
                             if (thirdLevel.size() > 0) {
-                                oBool = createBoolQuery(thirdLevel, "and");
+                                oBool = createBoolQuery(thirdLevel, LogicEnum.AND);
                                 filterBool.should(oBool);
                             }
 
                             this.filterQueryBuilder = filterBool;
+
                             break label142;
                         }
 
                         filterQuery = it.next();
+                        //获取查询字段名称
                         curTypeName = filterQuery.getType();
 
-                    } while(filterQuery.getStart() == null);
+                    } while (filterQuery.getStart() == null);
 
                     query = null;
                     //搜索类型
-                    String curQueryType = filterQuery.getQueryType();
+                    QueryTypeEnum curQueryType = filterQuery.getQueryType();
                     String curV;
 
-                    //搜索字段类型为精确分词查询时
-                    if ("term".equals(curQueryType)) {
-                        curV = filterQuery.getField();
+                    switch (curQueryType) {
+                        //搜索字段类型为精确分词查询时
+                        case TERM:
+                            query = QueryBuilders
+                                    .termQuery(filterQuery.getField(), filterQuery.getStart());
 
-                        //字段为性别时
-                        if (! StringUtils.isEmpty(curV)
-                                && curV
-                                .equals(
-                                        ConfigProperties
-                                                .getKey("es.query.field.patient.gender")
-                                )
-                        ) {
-                            BoolQueryBuilder bqb = QueryBuilders.boolQuery();
-                            if (curV.contains("男")) {
-                                bqb.should(QueryBuilders.termQuery(curV, "男"));
-                                bqb.should(QueryBuilders.termQuery(curV, "男性"));
-                                query = bqb;
-                            } else if (curV.contains("女")) {
-                                bqb.should(QueryBuilders.termQuery(curV, "女"));
-                                bqb.should(QueryBuilders.termQuery(curV, "女性"));
-                                query = bqb;
-                            } else {
-                                query = QueryBuilders.termQuery(curV, curV);
+                            break label143;
+
+                        //范围搜索（大于等于start值）
+                        case RANGE:
+                            RangeQueryBuilder cQuery = QueryBuilders
+                                    .rangeQuery(filterQuery.getField())
+                                    .from(filterQuery.getStart(), true);
+
+                            //设置范围搜索终止值
+                            if (filterQuery.getEnd() != null) {
+                                cQuery.to(filterQuery.getEnd(), true);
                             }
+
+                            query = cQuery;
+
+                            break label143;
+                        case TYPE:
+                        case DOCTYPE:
+                            //其余情况全为联合搜索
+                            curV = filterQuery.getStart();
+                            if (!StringUtils.isEmpty(curV)) {
+
+                                if (curV.contains(".")) {
+                                    String[] arr = curV.split("\\.");
+                                    if (arr.length >= 2) {
+                                        filterField = arr[1];
+                                        query = QueryBuilders.termQuery("join_field", arr[0]);
+                                    }
+                                } else {
+                                    query = QueryBuilders.termQuery("join_field", curV);
+                                }
+
+                                docTypeQuery.add(query);
+                            }
+
                             break;
-                        }
-                        
-                        //不为性别时
-                        query = QueryBuilders.termQuery(
-                                filterQuery.getField(),
-                                filterQuery.getStart()
-                        );
+                        default:
 
-                        break;
-                    }
-
-                    //范围搜索（大于等于start值）
-                    if ("range".equals(curQueryType)) {
-                        RangeQueryBuilder cQuery = QueryBuilders
-                                .rangeQuery(
-                                        filterQuery
-                                                .getField()
-                                )
-                                .from(
-                                        filterQuery.getStart(),
-                                        true
-                                );
-
-                        //设置范围搜索终止值
-                        if (filterQuery.getEnd() != null) {
-                            cQuery.to(filterQuery.getEnd(), true);
-                        }
-
-                        query = cQuery;
-                        break;
-                    }
-
-                    if (! "type"
-                            .equals(curQueryType)
-                            && !"docType"
-                            .equals(curQueryType)
-                    ) {
-                        break;
-                    }
-
-                    //其余情况全为联合搜索
-                    curV = filterQuery.getStart();
-                    if (! StringUtils.isEmpty(curV)) {
-
-                        if (curV.contains(".")) {
-                            String[] arr = curV.split("\\.");
-                            if (arr.length >= 2) {
-                                filterField = arr[1];
-                                query = QueryBuilders.termQuery("join_field", arr[0]);
-                            }
-                        } else {
-                            query = QueryBuilders.termQuery("join_field", curV);
-                        }
-
-                        docTypeQuery.add(query);
+                            break;
                     }
                 }
 
                 //设置相应的构造
-                if (patientTableName.equals(curTypeName)) {
-                    oneLevel
-                            .add(query);
-                    secondLevel
-                            .add(
-                                    new HasParentQueryBuilder(
-                                            curTypeName,
-                                            query,
-                                            false
-                                    )
-                            );
-                    thirdLevel
-                            .add(
-                                    new HasParentQueryBuilder(
-                                            admTableName,
-                                            new HasParentQueryBuilder(
-                                                    curTypeName,
-                                                    query,
-                                                    false
-                                            ),
-                                            false
-                                    )
-                            );
-                } else if (admTableName.equals(curTypeName)) {
-                    oneLevel.add(new HasChildQueryBuilder(curTypeName, query, ScoreMode.Max));
-                    secondLevel.add(query);
-                    thirdLevel.add(new HasParentQueryBuilder(curTypeName, query, false));
-                } else if (!"all".equals(curTypeName)) {
-                    oneLevel.add(new HasChildQueryBuilder(admTableName, new HasChildQueryBuilder(curTypeName, query, ScoreMode.Max), ScoreMode.Max));
-                    secondLevel.add(new HasChildQueryBuilder(curTypeName, query, ScoreMode.Max));
+                if (!"all".equals(curTypeName)) {
+                    HasChildQueryBuilder childQueryBuilder = new HasChildQueryBuilder(curTypeName, query, ScoreMode.Max);
+                    oneLevel.add(new HasChildQueryBuilder(admTableName, childQueryBuilder, ScoreMode.Max));
+                    secondLevel.add(childQueryBuilder);
                     thirdLevel.add(query);
                 }
             }
@@ -257,11 +209,11 @@ public final class QuickConditionBuilder
             this.filterQueryBuilder = null;
         }
 
-        Iterator it = this.fields.entrySet().iterator();
+        Iterator<Map.Entry<String, List<PropertyMapper>>> it = this.fields.entrySet().iterator();
 
         label120:
         while(it.hasNext()) {
-            Map.Entry<String, List<PropertyMapper>> entry = (Map.Entry)it.next();
+            Map.Entry<String, List<PropertyMapper>> entry = it.next();
             String typeName = entry.getKey();
             List<PropertyMapper> objs = entry.getValue();
             List<String> cfs = new ArrayList<>();
@@ -274,27 +226,9 @@ public final class QuickConditionBuilder
                     if (! itPropertyMapper.hasNext()) {
                         curFields.addAll(cfs);
                         QueryStringQueryBuilder curQueryStringBr = buildQueryString(this.queryString, cfs);
-                        if (patientTableName.equals(typeName)) {
-                            secondBool
-                                    .should(
-                                            new HasParentQueryBuilder(
-                                                    typeName,
-                                                    curQueryStringBr,
-                                                    false
-                                            )
-                                    );
-                        } else if (admTableName.equals(typeName)) {
-                            secondBool.should(curQueryStringBr);
-                        } else {
-                            secondBool
-                                    .should(
-                                            new HasChildQueryBuilder(
-                                                    typeName,
-                                                    curQueryStringBr,
-                                                    ScoreMode.Max
-                                            )
-                                    );
-                        }
+
+                        secondBool.should(new HasChildQueryBuilder(typeName, curQueryStringBr, ScoreMode.Max));
+
                         continue label120;
                     }
 

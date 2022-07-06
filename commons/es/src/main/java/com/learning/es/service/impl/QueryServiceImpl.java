@@ -49,7 +49,7 @@ public class QueryServiceImpl
     }
 
     public long count(QueryBuilder queryBuilder, String... indices) {
-        //设置索引计数器
+        //设置查询结果计数器请求
         CountRequest countRequest = new CountRequest(indices);
         countRequest.query(queryBuilder);
 
@@ -64,7 +64,12 @@ public class QueryServiceImpl
     public SearchResult search(QueryBuilder queryBuilder, int size, int from, String... indices) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         //设置分页查询条件
-        searchSourceBuilder.query(queryBuilder).size(size).from(from);
+        searchSourceBuilder
+                .query(queryBuilder)
+                .size(size)
+                .from(from);
+
+        //执行分页查询请求
         return this.search(searchSourceBuilder, indices);
     }
 
@@ -126,14 +131,19 @@ public class QueryServiceImpl
     }
 
     public SearchHits searchForHits(SearchSourceBuilder sourceBuilder, String... indices) {
+
+        //设置查询请求
         SearchRequest searchRequest = new SearchRequest(indices);
-        //设置类型过滤条件
-        searchRequest.types("doc");
-        searchRequest.source(sourceBuilder);
+        searchRequest
+                .types("doc")
+                .source(sourceBuilder);
+
+        //获取查询结果
         return this.searchForHits(searchRequest);
     }
 
     public SearchHits searchForHits(SearchSourceBuilder sourceBuilder, HighlightBuilder highlightBuilder, int from, int size, String... indices) {
+        //设置查询请求
         sourceBuilder.from(from)
                 .size(size)
                 .highlighter(highlightBuilder);
@@ -144,7 +154,10 @@ public class QueryServiceImpl
     public SearchHits searchForHits(SearchRequest searchRequest) {
 
         try {
-            SearchResponse searchResponse = this.client.search(searchRequest, RequestOptions.DEFAULT);
+            //执行查询请求
+            SearchResponse searchResponse = this
+                    .client
+                    .search(searchRequest, RequestOptions.DEFAULT);
             //返回查询查询数据
             return searchResponse.getHits();
         } catch (Exception e) {
@@ -153,11 +166,17 @@ public class QueryServiceImpl
     }
 
     public SearchHits searchForHits(SearchRequest searchRequest, SearchSourceBuilder sourceBuilder, BoolQueryBuilder boolQueryBuilder, int from, int size) {
-        searchRequest.types("doc");
-        sourceBuilder.from(from);
-        sourceBuilder.size(size);
-        sourceBuilder.query(boolQueryBuilder);
-        searchRequest.source(sourceBuilder);
+
+        //设置查询请求
+        searchRequest
+                .types("doc")
+                .source(
+                        sourceBuilder
+                                .from(from)
+                                .size(size)
+                                .query(boolQueryBuilder)
+                );
+        //执行查询请求获取结果
         return this.searchForHits(searchRequest);
     }
 
@@ -224,6 +243,7 @@ public class QueryServiceImpl
 
                 String scrollId = searchResponse.getScrollId();
 
+                //滚动查询获取下一结果
                 while(! ArrayUtils.isEmpty(searchHits)) {
                     SearchScrollRequest scrollRequest = new SearchScrollRequest(scrollId);
                     scrollRequest.scroll(scroll);
