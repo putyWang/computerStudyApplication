@@ -136,16 +136,16 @@ public class DocumentServiceImpl
 
         //设置必须包含的搜索字段
         if (bringInto != null) {
-            patientQueryBuilder.must(bringInto.toQueryBuilderForPatient(1));
-            secondQueryBuilder.must(bringInto.toQueryBuilderForPatient(2));
-            thirdQueryBuilder.must(bringInto.toQueryBuilderForPatient(3));
+            patientQueryBuilder.must(bringInto.toQueryBuilder(1));
+            secondQueryBuilder.must(bringInto.toQueryBuilder(2));
+            thirdQueryBuilder.must(bringInto.toQueryBuilder(3));
         }
 
         //设置排除数据
         if (rulingOut != null) {
-            patientQueryBuilder.mustNot(rulingOut.toQueryBuilderForPatient(1));
-            secondQueryBuilder.mustNot(rulingOut.toQueryBuilderForPatient(2));
-            thirdQueryBuilder.mustNot(rulingOut.toQueryBuilderForPatient(3));
+            patientQueryBuilder.mustNot(rulingOut.toQueryBuilder(1));
+            secondQueryBuilder.mustNot(rulingOut.toQueryBuilder(2));
+            thirdQueryBuilder.mustNot(rulingOut.toQueryBuilder(3));
         }
 
         //注入数据搜索构造器

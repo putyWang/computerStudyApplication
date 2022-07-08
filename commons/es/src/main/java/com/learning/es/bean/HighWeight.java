@@ -6,7 +6,7 @@ public class HighWeight {
      */
     private String highString;
     /**
-     * 宽度
+     * 比重
      */
     private int weight;
 

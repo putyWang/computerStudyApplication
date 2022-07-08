@@ -12,6 +12,7 @@ import org.elasticsearch.index.query.*;
 import org.elasticsearch.join.query.HasChildQueryBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -111,39 +112,40 @@ public class ConditionBuildBase {
     }
 
     /**
-     * 创建区间查询
-     *
-     * @param itemInfo
-     * @param relativeCode
-     * @param value1
-     * @param value2
+     * 根据上下限创建区间查询
+     * @param itemInfo 查询字段信息
+     * @param relativeCode 关联词编码
+     * @param start 下限值
+     * @param end 上限值
      * @return
      */
-    public static QueryBuilder createItemBetweenQuery(FieldItemInfo itemInfo, String relativeCode, Object value1, Object value2) {
+    public static QueryBuilder createItemBetweenQuery(FieldItemInfo itemInfo, String relativeCode, Object start, Object end) {
         String fieldName = itemInfo.getFieldName();
 
         relativeCode = relativeCode.toLowerCase();
         RelativeTypeEnum relativeTypeEnum = RelativeTypeEnum.getByCode(relativeCode);
         QueryBuilder queryBuilder = null;
+
         if (relativeTypeEnum == null) {
             return null;
         }
+
         switch (relativeTypeEnum) {
             // 开区间
             case BTEWEENT_OPEN:
-                queryBuilder = QueryBuilders.rangeQuery(fieldName).from(value1, false).to(value2, false);
+                queryBuilder = QueryBuilders.rangeQuery(fieldName).from(start, false).to(end, false);
                 break;
             // 闭区间
             case BTEWEENT_OFF:
-                queryBuilder = QueryBuilders.rangeQuery(fieldName).from(value1, true).to(value2, true);
+                queryBuilder = QueryBuilders.rangeQuery(fieldName).from(start, true).to(end, true);
                 break;
             // 左开右闭区间
             case BTEWEENT_LEFT:
-                queryBuilder = QueryBuilders.rangeQuery(fieldName).from(value1, false).to(value2, true);
+                queryBuilder = QueryBuilders.rangeQuery(fieldName).from(start, false).to(end, true);
                 break;
             // 左闭右开区间
             case BTEWEENT_RIGHT:
-                queryBuilder = QueryBuilders.rangeQuery(fieldName).from(value1, true).to(value2, false);
+                queryBuilder = QueryBuilders.rangeQuery(fieldName).from(start, true).to(end, false);
                 break;
             default:
                 break;
@@ -162,7 +164,7 @@ public class ConditionBuildBase {
      */
     public static QueryBuilder createItemQuery(
             FieldItemInfo itemInfo,
-            String relativeCode,
+            @NotNull String relativeCode,
             Object start,
             Object end
     ) {
@@ -176,16 +178,9 @@ public class ConditionBuildBase {
         }
 
         String typeName = itemInfo.getTypeName();
-        CRFFieldInfo crfFieldInfo = itemInfo.getCrf();
 
-        if (crfFieldInfo == null) {
-            throw new SpringBootException("CRF表单字段信息不能为空，请检查");
-        }
-
-        String formGuid = crfFieldInfo.getFormGuid();
         String fieldName = itemInfo.getFieldCode();
         relativeCode = relativeCode.toLowerCase();
-        String joinField = ElasticConst.ELASTIC_FIELD_JION_FIELD;
 
         RelativeTypeEnum relativeTypeEnum = RelativeTypeEnum.getByCode(relativeCode);
         QueryBuilder queryBuilder = null;
@@ -198,28 +193,14 @@ public class ConditionBuildBase {
         switch (relativeTypeEnum) {
             // 等于
             case EQUAL:
-                if (! ElasticConst.ELASTIC_FIELD_PATIENT.equals(typeName)){
-                    // 精确查询用".keyword"
-                    fieldName = fieldName + ".keyword";
-                }
-
                 queryBuilder = QueryBuilders.termQuery(fieldName, start);
                 break;
             // 不等于
             case NOT_EQUAL:
-                if (!ElasticConst.ELASTIC_FIELD_PATIENT.equals(typeName)){
-                    // 精确查询用".keyword"
-                    fieldName = fieldName + ".keyword";
-                }
-
-                BoolQueryBuilder bool;
-                // 加上表过滤
-                if (ElasticConst.ELASTIC_FIELD_CRF.equals(typeName)){
-                    bool = QueryBuilders.boolQuery().filter(QueryBuilders.termQuery(ElasticConst.ELASTIC_FIELD_FORM_GUID, formGuid));
-                }else {
-                    bool = QueryBuilders.boolQuery().filter(QueryBuilders.termQuery(ElasticConst.ELASTIC_FIELD_JION_FIELD, typeName));
-                }
-                queryBuilder = bool.mustNot(QueryBuilders.termQuery(fieldName, start));
+                queryBuilder = QueryBuilders
+                        .boolQuery()
+                        .filter(QueryBuilders.termQuery(ElasticConst.ELASTIC_FIELD_JION_FIELD, typeName))
+                        .mustNot(QueryBuilders.termQuery(fieldName, start));
                 break;
             //小于
             case LESS_THAN:
@@ -239,26 +220,11 @@ public class ConditionBuildBase {
                 break;
             // 包含
             case INCLUDE:
-                // 先将英文字符转换为小写
-//                start = start.toString().toLowerCase();
-//                queryBuilder = QueryBuilders.matchQuery(fieldName, start)
-//                        .operator(Operator.AND)
-//                        .minimumShouldMatch("90%")
-//                        .analyzer(AnalyzerEnum.IK_MAX_WORD.getCode());
-                queryBuilder = buildQueryString2(start.toString(), fieldName);
+                queryBuilder = buildFuzzyQueryString(start.toString(), fieldName);
                 break;
             // 不包含
             case NOT_INCLUDE:
-                start = start.toString().toLowerCase();
-                MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery(fieldName, start)
-                        .operator(Operator.AND)
-                        //最大匹配为90%
-                        .minimumShouldMatch("90%")
-                        //设置字段分析器为IK_MAX_WORD
-                        .analyzer(AnalyzerEnum.IK_MAX_WORD.getCode());
-                BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-                boolQueryBuilder.mustNot(matchQueryBuilder);
-                queryBuilder = boolQueryBuilder;
+                queryBuilder = new BoolQueryBuilder().mustNot(buildFuzzyQueryString(start.toString(), fieldName));
                 break;
             // 闭区间
             case BTEWEENT_OFF:
@@ -307,35 +273,17 @@ public class ConditionBuildBase {
                 break;
             // 字段值不为空查询
             case NOT_NULL:
-                BoolQueryBuilder bool1;
+                queryBuilder = QueryBuilders
+                        .boolQuery()
+                        .filter(
+                                QueryBuilders
+                                        .termQuery(ElasticConst.ELASTIC_FIELD_JION_FIELD, typeName)
+                        )
+                        .must(QueryBuilders.existsQuery(fieldName));
 
-                // 加上表过滤
-                if (ElasticConst.ELASTIC_FIELD_CRF.equals(typeName)){
-                    bool1 = QueryBuilders
-                            .boolQuery()
-                            .filter(
-                                    QueryBuilders
-                                            .termQuery(
-                                                    ElasticConst.ELASTIC_FIELD_FORM_GUID,
-                                                    formGuid
-                                            )
-                            );
-                }else {
-                    bool1 = QueryBuilders
-                            .boolQuery()
-                            .filter(
-                                    QueryBuilders
-                                            .termQuery(
-                                                    ElasticConst.ELASTIC_FIELD_JION_FIELD,
-                                                    typeName
-                                            )
-                            );
-                }
-                queryBuilder = bool1.must(QueryBuilders.existsQuery(fieldName));
                 break;
             default:
                 break;
-
         }
         if (queryBuilder == null) {
             throw new SpringBootException("未找到关系词类型");
@@ -344,43 +292,41 @@ public class ConditionBuildBase {
     }
 
     /**
-     * 构建全文检索QueryString查询
-     * @param queryString
-     * @param fields
+     * 多个字段模糊查询
+     * @param queryString 查询字符串
+     * @param fields 查询字段列表
      * @return
      */
     public static QueryStringQueryBuilder buildQueryString(String queryString, List<String> fields) {
-        QueryStringQueryBuilder queryBuilder = QueryBuilders.queryStringQuery(queryString);
-        queryBuilder.analyzer(AnalyzerEnum.IK_MAX_WORD.getCode());
-        //允许*或?作为第一个字符
-        queryBuilder.allowLeadingWildcard(true);
-        queryBuilder.defaultOperator(Operator.AND);
-        queryBuilder.minimumShouldMatch("90%");
+        QueryStringQueryBuilder queryBuilder = QueryBuilders
+                .queryStringQuery(queryString)
+                .analyzer(AnalyzerEnum.IK_MAX_WORD.getCode())
+                //允许*或?作为第一个字符
+                .allowLeadingWildcard(true)
+                .defaultOperator(Operator.AND)
+                .minimumShouldMatch("90%");
+
+        //添加查询字段
         for (String f : fields) {
-            float boots = 1.0f;
-            if (f.endsWith("name")) {
-                boots = 2.0f;
-            }
-            queryBuilder.field(f, boots);
+            queryBuilder.field(f);
         }
 
         return queryBuilder;
     }
 
     /**
-     * 单个字段精确包含查询
-     *
-     * @param queryString
-     * @param field
+     * 单个字段模糊查询
+     * @param queryString 查询字段
+     * @param field 字段名
      * @return
      */
-    public static QueryStringQueryBuilder buildQueryString2(String queryString, String field) {
-        QueryStringQueryBuilder queryBuilder = QueryBuilders.queryStringQuery("*" + queryString + "*");
-        //允许*或?作为第一个字符
-        queryBuilder.allowLeadingWildcard(true);
-        queryBuilder.defaultField(field);
+    public static QueryStringQueryBuilder buildFuzzyQueryString(String queryString, String field) {
 
-        return queryBuilder;
+        return QueryBuilders
+                //允许*或?作为第一个字符
+                .queryStringQuery("*" + queryString + "*")
+                .allowLeadingWildcard(true)
+                .defaultField(field);
     }
 
 }

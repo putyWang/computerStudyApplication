@@ -4,11 +4,26 @@ import com.learning.es.enums.ESFieldTypeEnum;
 
 import java.io.Serializable;
 
+/**
+ * 字段参数类
+ */
 public class PropertyMapper implements Serializable {
     private static final long serialVersionUID = 1L;
+    /**
+     * 参数
+     */
     private String property;
+    /**
+     * 字段类型
+     */
     private ESFieldTypeEnum propertyType;
+    /**
+     * 中文描述
+     */
     private String chineseDesc;
+    /**
+     * 脱敏类型
+     */
     private Integer tuoMinType;
 
     public PropertyMapper() {

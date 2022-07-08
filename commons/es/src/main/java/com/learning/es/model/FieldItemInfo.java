@@ -40,16 +40,4 @@ public final class FieldItemInfo implements Serializable {
      * 映射的typeName
      */
     private String typeName;
-    /**
-     * 关联的crf表字段查询信息
-     * "crf":{														// crf map对象
-     * 		"formId": 17,											// crf表单id
-     * 		"name": "crf基本信息表性别",							// crf表单字段名称name
-     * 		"code": "input_6",										// crf表单字段key
-     * 		"type": "input",										// crf表单字段type
-     * 		"formGuid": "ff409872-d5cb-4984-8ad3-4f2b2b222f65"      // crf表单formGuid
-     *       }
-     */
-    private CRFFieldInfo crf;
-
 }

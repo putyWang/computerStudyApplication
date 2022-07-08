@@ -150,4 +150,20 @@ public class CommonBeanUtil {
 
         return key;
     }
+
+    /**
+     * 初始化泛型类
+     * @param cls 泛型类对象
+     * @param <T> 泛型
+     * @return
+     */
+    public static <T> T getNewObject(Class<T> cls) {
+        T t=null;
+        try {
+            t = cls.newInstance();
+        } catch (InstantiationException|IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return t;
+    }
 }

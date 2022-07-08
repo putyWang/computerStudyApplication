@@ -119,7 +119,7 @@ public class ConditionBuilder {
      * @param level 层级
      * @return
      */
-    public QueryBuilder toQueryBuilderForPatient(int level) {
+    public QueryBuilder toQueryBuilder(int level) {
         QueryBuilder qb = null;
         List<QueryBuilder> qbList = new ArrayList<>();
         List<ConditionBuilder> newChild = new ArrayList<>();
@@ -130,31 +130,26 @@ public class ConditionBuilder {
             mapper.setLogical(this.logical);
             mapper.push(this.queryBuilders);
             //构建子查询条件
-            if (
-                    this.child != null &&
-                            this.child.size() > 0
+            if (this.child != null && this.child.size() > 0
             ) {
                 Iterator<ConditionBuilder> it = this.child.iterator();
 
                 label65:
                 while(true) {
                     while(true) {
-                        ConditionBuilder c;
+                        ConditionBuilder childConditionBuilder;
                         do {
                             if (!it.hasNext()) {
                                 break label65;
                             }
 
-                            c = it.next();
-                        } while(c.queryBuilders == null);
+                            childConditionBuilder = it.next();
+                        } while(childConditionBuilder.queryBuilders == null);
 
-                        if (
-                                c.queryBuilders.size() != 1 &&
-                                        !c.logical.equals(this.logical)
-                        ) {
-                            newChild.add(c);
+                        if (childConditionBuilder.queryBuilders.size() != 1 && ! childConditionBuilder.logical.equals(this.logical)) {
+                            newChild.add(childConditionBuilder);
                         } else {
-                            mapper.push(c.queryBuilders);
+                            mapper.push(childConditionBuilder.queryBuilders);
                         }
                     }
                 }
@@ -190,7 +185,7 @@ public class ConditionBuilder {
         if (newChild.size() > 0) {
 
             for (ConditionBuilder c : newChild) {
-                QueryBuilder childQueryBuilder = c.toQueryBuilderForPatient(level);
+                QueryBuilder childQueryBuilder = c.toQueryBuilder(level);
 
                 if (childQueryBuilder != null) {
                     qbList.add(childQueryBuilder);

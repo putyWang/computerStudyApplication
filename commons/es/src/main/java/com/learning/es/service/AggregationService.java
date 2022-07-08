@@ -6,8 +6,19 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 聚合查询
+ */
 public interface AggregationService {
-    Map<String, Object> docTypeCountAggr(String var1, QueryBuilder var2) throws Exception;
+
+    /**
+     *
+     * @param index
+     * @param secondQueryBuilder
+     * @return
+     * @throws Exception
+     */
+    Map<String, Object> docTypeCountAggr(String index, QueryBuilder secondQueryBuilder) throws Exception;
 
     Map<String, Object> aggrByRegNos(List<String> var1);
 

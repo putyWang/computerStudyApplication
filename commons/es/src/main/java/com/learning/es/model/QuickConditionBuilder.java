@@ -32,13 +32,16 @@ public final class QuickConditionBuilder
      */
     private String index;
     /**
-     * 查询字段
+     * 查询字符串
      */
     private String queryString;
     /**
      * 查询对象列表
      */
     private List<FilterQuery> filtersQueries;
+
+
+    private BoolQueryBuilder boolQueryBuilder;
     /**
      * 字段map
      * string为表名
@@ -46,15 +49,6 @@ public final class QuickConditionBuilder
      */
     private Map<String, List<PropertyMapper>> fields;
     private Map<String, PropertyMapper> textMapper;
-    /**
-     * 基本查询
-     */
-    private transient QueryBuilder rootTypeQueryBuilder;
-    /**
-     * 对查询结果进行次级查询
-     */
-    private transient QueryBuilder secondTypeQueryBuilder;
-    private transient QueryBuilder thirdTypeQueryBuilder;
     private transient QueryStringQueryBuilder queryStringQueryBuilder;
     /**
      * 布尔查询构造器
@@ -80,23 +74,18 @@ public final class QuickConditionBuilder
     }
 
     public void build() {
-        String patientTableName = ConfigProperties.getKey("es.query.table.patient");
-        String admTableName = ConfigProperties.getKey("es.query.table.adm");
+
         //高亮字段
         List<String> curFields = new ArrayList<>();
-        BoolQueryBuilder secondBool = new BoolQueryBuilder();
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         String filterField = null;
         //查询构造器列表
         List<QueryBuilder> docTypeQuery = new ArrayList<>();
 
         if (this.filtersQueries != null && this.filtersQueries.size() > 0) {
             BoolQueryBuilder filterBool = new BoolQueryBuilder();
-            //第一层查询条件
-            List<QueryBuilder> oneLevel = new ArrayList<>();
-            //第二层查询条件
-            List<QueryBuilder> secondLevel = new ArrayList<>();
-            //第三层查询条件
-            List<QueryBuilder> thirdLevel = new ArrayList<>();
+            //查询条件列表
+            List<QueryBuilder> queryList = new ArrayList<>();
 
             Iterator<FilterQuery> it = this
                     .filtersQueries
@@ -117,23 +106,8 @@ public final class QuickConditionBuilder
                     //循环到start有值时，对查询构造器进行构造
                     do {
                         if (!it.hasNext()) {
-                            QueryBuilder oBool;
-                            if (oneLevel.size() > 0) {
-                                oBool = createBoolQuery(oneLevel, LogicEnum.AND);
-                                filterBool.should(oBool);
-                            }
-
-                            if (secondLevel.size() > 0) {
-                                oBool = createBoolQuery(secondLevel, LogicEnum.AND);
-                                filterBool.should(oBool);
-                            }
-
-                            if (thirdLevel.size() > 0) {
-                                oBool = createBoolQuery(thirdLevel, LogicEnum.AND);
-                                filterBool.should(oBool);
-                            }
-
-                            this.filterQueryBuilder = filterBool;
+                            this.filterQueryBuilder = filterBool
+                                    .should(createBoolQuery(queryList, LogicEnum.AND));
 
                             break label142;
                         }
@@ -149,6 +123,7 @@ public final class QuickConditionBuilder
                     QueryTypeEnum curQueryType = filterQuery.getQueryType();
                     String curV;
 
+                    //构造非模糊搜索
                     switch (curQueryType) {
                         //搜索字段类型为精确分词查询时
                         case TERM:
@@ -192,18 +167,14 @@ public final class QuickConditionBuilder
 
                             break;
                         default:
-
+                            //剩下为模糊搜索
                             break;
                     }
                 }
 
-                //设置相应的构造
-                if (!"all".equals(curTypeName)) {
-                    HasChildQueryBuilder childQueryBuilder = new HasChildQueryBuilder(curTypeName, query, ScoreMode.Max);
-                    oneLevel.add(new HasChildQueryBuilder(admTableName, childQueryBuilder, ScoreMode.Max));
-                    secondLevel.add(childQueryBuilder);
-                    thirdLevel.add(query);
-                }
+                //添加对应的查询构造器
+                queryList.add(query);
+
             }
         } else {
             this.filterQueryBuilder = null;
@@ -211,11 +182,13 @@ public final class QuickConditionBuilder
 
         Iterator<Map.Entry<String, List<PropertyMapper>>> it = this.fields.entrySet().iterator();
 
+        //构造模糊搜索
         label120:
         while(it.hasNext()) {
             Map.Entry<String, List<PropertyMapper>> entry = it.next();
             String typeName = entry.getKey();
             List<PropertyMapper> objs = entry.getValue();
+            //字段列表
             List<String> cfs = new ArrayList<>();
             Iterator<PropertyMapper> itPropertyMapper = objs.iterator();
 
@@ -223,11 +196,11 @@ public final class QuickConditionBuilder
                 PropertyMapper mapper;
 
                 do {
+                    //字段获取完成后设置bool查询
                     if (! itPropertyMapper.hasNext()) {
                         curFields.addAll(cfs);
-                        QueryStringQueryBuilder curQueryStringBr = buildQueryString(this.queryString, cfs);
 
-                        secondBool.should(new HasChildQueryBuilder(typeName, curQueryStringBr, ScoreMode.Max));
+                        boolQueryBuilder.should(buildQueryString(this.queryString, cfs));
 
                         continue label120;
                     }
@@ -236,6 +209,7 @@ public final class QuickConditionBuilder
                 } while(StringUtils.isEmpty(filterField)
                         && ! filterField.equals(mapper.getProperty()));
 
+                //字段类型为TEXT和KEYWORD时设置模糊查询
                 ESFieldTypeEnum fieldTypeEnum = mapper.getPropertyType();
                 if (fieldTypeEnum != null) {
                     switch(fieldTypeEnum) {
@@ -246,39 +220,19 @@ public final class QuickConditionBuilder
                 }
             }
         }
-
-        QueryStringQueryBuilder queryBuilder = buildQueryString(this.queryString, curFields);
-        HighlightBuilder highlightBuilder = buildHighlightQuery(curFields);
-        this.queryStringQueryBuilder = queryBuilder;
-        this.highlightBuilder = highlightBuilder;
-        BoolQueryBuilder filter = new BoolQueryBuilder();
-        filter.filter(secondBool);
-
-        //设置次级查询过滤器
-        if (this.filterQueryBuilder != null) {
-            filter.filter(this.filterQueryBuilder);
-        }
-
-        this.rootTypeQueryBuilder = new HasChildQueryBuilder(admTableName, filter, ScoreMode.Max);
-        this.secondTypeQueryBuilder = filter;
-        this.thirdTypeQueryBuilder = new HasParentQueryBuilder(admTableName, filter, false);
+        this.queryStringQueryBuilder = buildQueryString(this.queryString, curFields);
+        this.highlightBuilder = buildHighlightQuery(curFields);
+        //设置布尔查询构造器
+        this.boolQueryBuilder
+                .filter(boolQueryBuilder)
+                .filter(this.filterQueryBuilder);
 
         if (docTypeQuery.size() > 0) {
-            BoolQueryBuilder rootLevelBool = new BoolQueryBuilder();
-            rootLevelBool.must(this.rootTypeQueryBuilder).must(docTypeQuery.get(0));
-            this.rootTypeQueryBuilder = rootLevelBool;
-            BoolQueryBuilder secondLevelBool = new BoolQueryBuilder();
-            secondLevelBool.must(this.secondTypeQueryBuilder).must(docTypeQuery.get(0));
-            this.secondTypeQueryBuilder = secondLevelBool;
-            BoolQueryBuilder thirdLevelBool = new BoolQueryBuilder();
-            thirdLevelBool.must(this.thirdTypeQueryBuilder).must(docTypeQuery.get(0));
-            this.thirdTypeQueryBuilder = thirdLevelBool;
-
-            if (docTypeQuery.size() > 0) {
-                BoolQueryBuilder filterLevelBool = new BoolQueryBuilder();
-                filterLevelBool.must(this.filterQueryBuilder).must(docTypeQuery.get(0));
-                this.filterQueryBuilder = filterLevelBool;
-            }
+            BoolQueryBuilder filterLevelBool = new BoolQueryBuilder();
+            filterLevelBool
+                    .must(this.filterQueryBuilder)
+                    .must(docTypeQuery.get(0));
+            this.filterQueryBuilder = filterLevelBool;
         }
 
     }
@@ -313,16 +267,8 @@ public final class QuickConditionBuilder
         return this.fields;
     }
 
-    public QueryBuilder getRootTypeQueryBuilder() {
-        return this.rootTypeQueryBuilder;
-    }
-
-    public QueryBuilder getSecondTypeQueryBuilder() {
-        return this.secondTypeQueryBuilder;
-    }
-
-    public QueryBuilder getThirdTypeQueryBuilder() {
-        return this.thirdTypeQueryBuilder;
+    public BoolQueryBuilder getBoolQueryBuilder() {
+        return boolQueryBuilder;
     }
 
     public QueryStringQueryBuilder getQueryStringQueryBuilder() {

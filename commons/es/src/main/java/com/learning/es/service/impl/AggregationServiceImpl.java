@@ -1,6 +1,8 @@
 package com.learning.es.service.impl;
 
 import com.learning.es.clients.RestClientFactory;
+import com.learning.es.model.ConfigProperties;
+import com.learning.es.model.condition.AdvancedConditionBuilder;
 import com.learning.es.service.AggregationService;
 import com.learning.es.service.EsServiceImpl;
 import com.learning.es.service.QueryService;
@@ -24,6 +26,7 @@ import org.elasticsearch.search.aggregations.bucket.range.Range;
 import org.elasticsearch.search.aggregations.bucket.range.RangeAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.*;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
@@ -47,16 +50,16 @@ public class AggregationServiceImpl
         QueryBuilder thirdQueryBuilder = AdvancedConditionBuilder.resolveThirdConditionGroup(secondQueryBuilder);
         BoolQueryBuilder queryBool = new BoolQueryBuilder();
         queryBool.should(secondQueryBuilder).should(thirdQueryBuilder);
-        boolQueryBuilder.filter(QueryBuilders.termsQuery("join_field", new String[]{ConfigProperties.getKey("es.query.table.order.lis"), ConfigProperties.getKey("es.query.table.order.ris"), ConfigProperties.getKey("es.query.table.adm"), ConfigProperties.getKey("es.query.table.operation")}));
+        boolQueryBuilder.filter(QueryBuilders.termsQuery("join_field", ConfigProperties.getKey("es.query.table.order.lis"), ConfigProperties.getKey("es.query.table.order.ris"), ConfigProperties.getKey("es.query.table.adm"), ConfigProperties.getKey("es.query.table.operation")));
         boolQueryBuilder.must(queryBool);
         CardinalityAggregationBuilder valueCountAggregation = (CardinalityAggregationBuilder) AggregationBuilders.cardinality("admno_count").field("admno");
         TermsAggregationBuilder aggregation = ((TermsAggregationBuilder)((TermsAggregationBuilder)AggregationBuilders.terms("docType").field("join_field")).subAggregation(valueCountAggregation)).order(BucketOrder.count(false)).size(10);
         TermsAggregationBuilder admTypeAggregation = ((TermsAggregationBuilder)AggregationBuilders.terms("admType").field(ConfigProperties.getKey("es.query.field.adm.type"))).order(BucketOrder.count(false)).size(10);
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(boolQueryBuilder).aggregation(aggregation).aggregation(admTypeAggregation).size(0);
-        Map<String, Object> result = new HashMap();
-        SearchRequest searchRequest = new SearchRequest(new String[]{index});
-        searchRequest.types(new String[]{"doc"});
+        Map<String, Object> result = new HashMap<>();
+        SearchRequest searchRequest = new SearchRequest(index);
+        searchRequest.types("doc");
         searchRequest.source(sourceBuilder);
         SearchResponse response = this.client.search(searchRequest, RequestOptions.DEFAULT);
         long curAdmNoTotal = 0L;
@@ -82,11 +85,11 @@ public class AggregationServiceImpl
             Terms.Bucket entry = (Terms.Bucket)var30.next();
             key = entry.getKey().toString();
             long docCount = entry.getDocCount();
-            Cardinality admCountAgg = (Cardinality)entry.getAggregations().get("admno_count");
+            Cardinality admCountAgg = entry.getAggregations().get("admno_count");
             long curAdmCount = admCountAgg.getValue();
             NumberFormat numberFormat = NumberFormat.getInstance();
             numberFormat.setMaximumFractionDigits(2);
-            percent = numberFormat.format((double)((float)curAdmCount / (float)curAdmNoTotal * 100.0F));
+            percent = numberFormat.format((float)curAdmCount / (float)curAdmNoTotal * 100.0F);
 
             try {
                 if (percent != null && Float.parseFloat(percent) >= 100.0F) {
@@ -165,10 +168,10 @@ public class AggregationServiceImpl
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
         QueryBuilder docTypeQuery = QueryBuilders.termQuery(joinField, docType);
         boolQueryBuilder.filter(docTypeQuery);
-        CardinalityAggregationBuilder countAggregation = (CardinalityAggregationBuilder)AggregationBuilders.cardinality("count").field(countField);
-        MaxAggregationBuilder maxAggregationBuilder = (MaxAggregationBuilder)((MaxAggregationBuilder)AggregationBuilders.max("max").field(timeField)).format("yyyy-MM-dd");
-        MinAggregationBuilder minAggregationBuilder = (MinAggregationBuilder)((MinAggregationBuilder)AggregationBuilders.min("min").field(timeField)).format("yyyy-MM-dd");
-        TermsAggregationBuilder aggregation = ((TermsAggregationBuilder)((TermsAggregationBuilder)((TermsAggregationBuilder)((TermsAggregationBuilder)AggregationBuilders.terms("aggr").field(aggreField)).subAggregation(countAggregation)).subAggregation(maxAggregationBuilder)).subAggregation(minAggregationBuilder)).size(20);
+        CardinalityAggregationBuilder countAggregation = AggregationBuilders.cardinality("count").field(countField);
+        MaxAggregationBuilder maxAggregationBuilder = AggregationBuilders.max("max").field(timeField).format("yyyy-MM-dd");
+        MinAggregationBuilder minAggregationBuilder = AggregationBuilders.min("min").field(timeField).format("yyyy-MM-dd");
+        TermsAggregationBuilder aggregation = AggregationBuilders.terms("aggr").field(aggreField).subAggregation(countAggregation).subAggregation(maxAggregationBuilder).subAggregation(minAggregationBuilder).size(20);
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(boolQueryBuilder).aggregation(aggregation).size(0);
         SearchRequest searchRequest = new SearchRequest(new String[]{index});
@@ -195,8 +198,8 @@ public class AggregationServiceImpl
                 long docCount = entry.getDocCount();
                 Cardinality countAgg = (Cardinality)entry.getAggregations().get("count");
                 long patientCount = countAgg.getValue();
-                Max max = (Max)entry.getAggregations().get("max");
-                Min min = (Min)entry.getAggregations().get("min");
+                Max max = entry.getAggregations().get("max");
+                Min min = entry.getAggregations().get("min");
                 String maxTime = max.getValueAsString();
                 String minTime = min.getValueAsString();
                 curMap.put("firstAdmTime", minTime);
@@ -514,7 +517,7 @@ public class AggregationServiceImpl
             searchRequest.types(new String[]{"doc"});
             searchRequest.source(sourceBuilder);
             SearchResponse response = this.client.search(searchRequest, RequestOptions.DEFAULT);
-            Min min = (Min)response.getAggregations().get("min");
+            Min min = response.getAggregations().get("min");
             Double value = min.getValue();
             boolean flag = value.isInfinite();
             minTime = flag ? "" : min.getValueAsString();
@@ -555,7 +558,7 @@ public class AggregationServiceImpl
         try {
             response = this.client.search(searchRequest, RequestOptions.DEFAULT);
             MultiBucketsAggregation diagAgg = (MultiBucketsAggregation)response.getAggregations().get(aggrName);
-            long curDocTypeTotal = response.getHits().totalHits;
+            long curDocTypeTotal = response.getHits().getTotalHits().value;
             if (curDocTypeTotal > 0L) {
                 Iterator var14 = diagAgg.getBuckets().iterator();
 

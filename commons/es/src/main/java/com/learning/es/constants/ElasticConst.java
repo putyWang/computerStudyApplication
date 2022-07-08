@@ -15,13 +15,9 @@ public class ElasticConst {
 
     public static String ELASTIC_FIELD_VISIT_ID = "visit_id";
 
-    public static String ELASTIC_FIELD_PATIENT = "patient";
-
     public static String ELASTIC_FIELD_ATTACHMENT = "attachment";
 
     public static String ELASTIC_FIELD_SAMPLE = "sample";
-
-    public static String ELASTIC_FIELD_CRF = "crf";
 
     public static String ELASTIC_FIELD_DOC_ID = "doc_id";
 
