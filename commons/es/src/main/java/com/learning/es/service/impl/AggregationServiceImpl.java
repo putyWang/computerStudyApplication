@@ -45,16 +45,31 @@ public class AggregationServiceImpl
         this.queryService = new QueryServiceImpl(restClientFactory);
     }
 
-    public Map<String, Object> docTypeCountAggr(String index, QueryBuilder secondQueryBuilder) throws Exception {
+    public Map<String, Object> docTypeCountAggr(String index, QueryBuilder secondQueryBuilder)
+            throws Exception {
+
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-        QueryBuilder thirdQueryBuilder = AdvancedConditionBuilder.resolveThirdConditionGroup(secondQueryBuilder);
+        QueryBuilder thirdQueryBuilder = AdvancedConditionBuilder
+                .resolveThirdConditionGroup(secondQueryBuilder);
+
         BoolQueryBuilder queryBool = new BoolQueryBuilder();
-        queryBool.should(secondQueryBuilder).should(thirdQueryBuilder);
-        boolQueryBuilder.filter(QueryBuilders.termsQuery("join_field", ConfigProperties.getKey("es.query.table.order.lis"), ConfigProperties.getKey("es.query.table.order.ris"), ConfigProperties.getKey("es.query.table.adm"), ConfigProperties.getKey("es.query.table.operation")));
+
+        queryBool
+                .should(secondQueryBuilder)
+                .should(thirdQueryBuilder);
         boolQueryBuilder.must(queryBool);
-        CardinalityAggregationBuilder valueCountAggregation = (CardinalityAggregationBuilder) AggregationBuilders.cardinality("admno_count").field("admno");
-        TermsAggregationBuilder aggregation = ((TermsAggregationBuilder)((TermsAggregationBuilder)AggregationBuilders.terms("docType").field("join_field")).subAggregation(valueCountAggregation)).order(BucketOrder.count(false)).size(10);
-        TermsAggregationBuilder admTypeAggregation = ((TermsAggregationBuilder)AggregationBuilders.terms("admType").field(ConfigProperties.getKey("es.query.field.adm.type"))).order(BucketOrder.count(false)).size(10);
+        CardinalityAggregationBuilder valueCountAggregation = AggregationBuilders
+                .cardinality("admno_count")
+                .field("admno");
+
+        TermsAggregationBuilder aggregation = AggregationBuilders
+                .terms("docType")
+                .field("join_field")
+                .subAggregation(valueCountAggregation)
+                .order(BucketOrder.count(false))
+                .size(10);
+
+        TermsAggregationBuilder admTypeAggregation = AggregationBuilders.terms("admType").field(ConfigProperties.getKey("es.query.field.adm.type")).order(BucketOrder.count(false)).size(10);
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
         sourceBuilder.query(boolQueryBuilder).aggregation(aggregation).aggregation(admTypeAggregation).size(0);
         Map<String, Object> result = new HashMap<>();
@@ -77,7 +92,7 @@ public class AggregationServiceImpl
             }
         }
 
-        Terms docTypeAgg = (Terms)response.getAggregations().get("docType");
+        Terms docTypeAgg = response.getAggregations().get("docType");
 
         String percent;
         String key;

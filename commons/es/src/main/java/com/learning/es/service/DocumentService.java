@@ -18,23 +18,7 @@ public interface DocumentService {
      * @param index 索引
      * @param actions 批量对应的操作数组
      */
-    void bulk(String index, List<Map<String, Object>> actions);
-
-    /**
-     * 批量从原索引迁移文档到目标索引
-     * @param sourceIndex 源索引
-     * @param destIndex 目标索引
-     * @param bringInto 查询中必须包含的项
-     * @param rulingOut 查询中肯定不包含的项
-     * @param dateQuery 数据查询构造器
-     */
-    void bulkByQuery(
-            String sourceIndex,
-            String destIndex,
-            ConditionBuilder bringInto,
-            ConditionBuilder rulingOut,
-            QueryBuilder dateQuery
-    );
+    void bulkInsert(String index, List<Map<String, Object>> actions);
 
     /**
      * 根据jsonString与文档id更新文档

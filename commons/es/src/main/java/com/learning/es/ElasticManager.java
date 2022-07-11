@@ -1,6 +1,5 @@
 package com.learning.es;
 
-import com.learning.es.bean.Result;
 import com.learning.es.clients.RestClientFactory;
 import com.learning.es.model.ConfigProperties;
 import com.learning.es.service.*;
@@ -18,7 +17,6 @@ public final class ElasticManager {
 
     public static ElasticManager getInstance() {
         if (instance == null) {
-            Class var0 = ElasticManager.class;
             synchronized(ElasticManager.class) {
                 if (instance == null) {
                     instance = new ElasticManager();

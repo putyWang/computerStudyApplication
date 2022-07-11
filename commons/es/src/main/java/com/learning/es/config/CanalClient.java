@@ -6,7 +6,7 @@ import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.alibaba.otter.canal.protocol.Message;
 import com.alibaba.otter.canal.protocol.exception.CanalClientException;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.learning.es.FormElasticManager;
+import com.learning.es.ElasticManager;
 import com.learning.es.processor.CanalDataProcessInterface;
 import com.learning.es.model.CanalEntryModel;
 import com.learning.es.processor.CanalProcessor;
@@ -107,11 +107,11 @@ public class CanalClient implements DisposableBean {
         if (canalConnector != null) {
             try {
                 int batchSize = 1000;
-                ClusterHealthResponse clusterHealthResponse = FormElasticManager.cluster().clusterHealth();
+                ClusterHealthResponse clusterHealthResponse = ElasticManager.cluster().clusterHealth();
                 // 如果es断开连接则消息队列等待到es重新连上后再执行
                 if (clusterHealthResponse == null) {
                     // 重置es连接
-                    FormElasticManager.reset();
+                    ElasticManager.reset();
                 } else {
                     // withOutAck, 告诉canal接收消息后先不ack, 等处理完手动ack
                     Message message = canalConnector.getWithoutAck(batchSize);

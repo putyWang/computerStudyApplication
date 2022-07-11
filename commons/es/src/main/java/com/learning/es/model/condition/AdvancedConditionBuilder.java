@@ -17,7 +17,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public final class AdvancedConditionBuilder extends ConditionBuildBase implements Serializable {
+public final class AdvancedConditionBuilder
+        extends ConditionBuildBase
+        implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private String index;
     private Map<String, PropertyMapper> propertyMapperMap;
@@ -37,7 +40,7 @@ public final class AdvancedConditionBuilder extends ConditionBuildBase implement
 
     public static AdvancedConditionBuilder builder(QueryConditionGroup queryConditionGroup, List<RegionBeanTree> typeTree, Map<String, PropertyMapper> propertyMapperMap) {
         AdvancedConditionBuilder builder = null;
-        return (AdvancedConditionBuilder)builder;
+        return builder;
     }
 
     public static AdvancedConditionBuilder builder(QueryConditionGroup bringintoCond, QueryConditionGroup rulingoutCond, List<TreeNode> typeTree, Map<String, PropertyMapper> propertyMapperMap, String index) throws Exception {
@@ -49,14 +52,12 @@ public final class AdvancedConditionBuilder extends ConditionBuildBase implement
         if (secondQueryBuilder == null) {
             return null;
         } else {
-            List<String> secondTypes = new ArrayList();
+            List<String> secondTypes = new ArrayList<>();
             secondTypes.add(ConfigProperties.getKey("es.query.table.adm"));
             new BoolQueryBuilder();
-            List<QueryBuilder> builders = new ArrayList();
-            Iterator var3 = secondTypes.iterator();
+            List<QueryBuilder> builders = new ArrayList<>();
 
-            while(var3.hasNext()) {
-                String t = (String)var3.next();
+            for (String t : secondTypes) {
                 QueryBuilder queryBuilder = new HasParentQueryBuilder(t, secondQueryBuilder, false);
                 builders.add(queryBuilder);
             }
