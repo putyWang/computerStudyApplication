@@ -1,6 +1,7 @@
-package com.learning.core.utils;
+package com.learning.core.utils.file.transfer;
 
 import com.learning.core.exception.SpringBootException;
+import com.learning.core.utils.StringUtils;
 
 import java.io.*;
 

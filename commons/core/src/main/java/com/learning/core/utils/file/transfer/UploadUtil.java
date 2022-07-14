@@ -1,4 +1,4 @@
-package com.learning.core.utils;
+package com.learning.core.utils.file.transfer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;

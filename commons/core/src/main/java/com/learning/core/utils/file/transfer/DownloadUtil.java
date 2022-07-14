@@ -1,5 +1,8 @@
-package com.learning.core.utils;
+package com.learning.core.utils.file.transfer;
 
+import com.learning.core.utils.BrowserUtil;
+import com.learning.core.utils.ContentTypeUtil;
+import com.learning.core.utils.HttpServletRequestUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

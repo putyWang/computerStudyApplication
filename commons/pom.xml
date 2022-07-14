@@ -23,6 +23,10 @@
         <module>web</module>
     </modules>
 
+    <properties>
+        <easyexcel.version>2.2.7</easyexcel.version>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -49,6 +53,11 @@
                 <groupId>com.learning</groupId>
                 <artifactId>es</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

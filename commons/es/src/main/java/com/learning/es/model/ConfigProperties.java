@@ -1,7 +1,7 @@
 package com.learning.es.model;
 
 import com.learning.core.utils.PropertiesUtils;
-import com.learning.core.utils.SourceFileUtils;
+import com.learning.core.utils.file.transfer.SourceFileUtils;
 
 import java.io.IOException;
 import java.util.Map;

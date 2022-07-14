@@ -1,7 +1,7 @@
 package com.learning.web.controller;
 
 import com.learning.core.bean.ApiResult;
-import com.learning.core.utils.DownloadUtil;
+import com.learning.core.utils.file.transfer.DownloadUtil;
 import com.learning.core.utils.StringUtils;
 import com.learning.shiro.annotion.Model;
 import io.swagger.annotations.Api;

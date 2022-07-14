@@ -2,7 +2,7 @@ package com.learning.web.controller;
 
 import com.learning.core.bean.ApiResult;
 import com.learning.core.utils.StringUtils;
-import com.learning.core.utils.UploadUtil;
+import com.learning.core.utils.file.transfer.UploadUtil;
 import com.learning.shiro.annotion.Model;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
