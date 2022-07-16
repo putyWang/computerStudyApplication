@@ -1,12 +1,8 @@
 package com.learning.es.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.learning.core.utils.ArrayUtils;
 import com.learning.core.utils.DateTimeUtil;
 import com.learning.core.utils.StringUtils;
-import com.learning.es.ElasticManager;
 import com.learning.es.clients.RestClientFactory;
-import com.learning.es.model.condition.ConditionBuilder;
 import com.learning.es.service.DocumentService;
 import com.learning.es.service.EsServiceImpl;
 import lombok.extern.log4j.Log4j2;
@@ -14,26 +10,16 @@ import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.ClearScrollRequest;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchScrollRequest;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.core.CountRequest;
-import org.elasticsearch.client.core.CountResponse;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.*;
-import org.elasticsearch.search.Scroll;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Log4j2
 public class DocumentServiceImpl
@@ -148,6 +134,26 @@ public class DocumentServiceImpl
                 .docAsUpsert(true);
 
         executeUpdate(request);
+    }
+
+    @Override
+    public void deleteByDocIds(String index, List<String> docIds) {
+        String type = "doc";
+
+        IdsQueryBuilder idsQueryBuilder = new IdsQueryBuilder();
+        idsQueryBuilder.addIds(docIds.toArray(new String[0]));
+
+        DeleteByQueryRequest request = new DeleteByQueryRequest(index)
+                .setQuery(idsQueryBuilder)
+                .setRefresh(true);
+
+        try {
+            BulkByScrollResponse bulkResponse = this.client.deleteByQuery(request, RequestOptions.DEFAULT);
+
+            log.info("删除elastic文档数量为" + bulkResponse.getDeleted());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -5,7 +5,6 @@ import com.learning.es.constants.ElasticConst;
 import com.learning.es.enums.AnalyzerEnum;
 import com.learning.es.enums.LogicEnum;
 import com.learning.es.enums.RelativeTypeEnum;
-import com.learning.es.model.CRFFieldInfo;
 import com.learning.es.model.FieldItemInfo;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.*;

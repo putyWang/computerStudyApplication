@@ -1,10 +1,5 @@
 package com.learning.es.service;
 
-import com.learning.es.bean.ElasticCRFFillData;
-import com.learning.es.constants.ElasticMethodInterface;
-import com.learning.es.model.condition.ConditionBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-
 import java.util.List;
 import java.util.Map;
 
@@ -37,4 +32,11 @@ public interface DocumentService {
      * @param data 更新对象的dataMap
      */
     void updateByDocId(String index, String docId, String routing, Map<String, Object> data);
+
+    /**
+     * 删除指定id文档
+     * @param index 索引
+     * @param docIds 文档id数组
+     */
+    void deleteByDocIds(String index, List<String> docIds);
 }

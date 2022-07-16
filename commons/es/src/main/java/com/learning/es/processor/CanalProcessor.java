@@ -1,7 +1,7 @@
 package com.learning.es.processor;
 
 import com.alibaba.otter.canal.protocol.CanalEntry;
-import com.learning.es.FormElasticManager;
+import com.learning.es.ElasticManager;
 import com.learning.es.constants.ElasticConst;
 import com.learning.es.model.CanalEntryModel;
 import com.learning.es.model.elastic.ElasticDocModel;
@@ -134,11 +134,11 @@ public final class CanalProcessor {
             // 无限循环从blockQueue中取数据
             while (true) {
                 try{
-                    ClusterHealthResponse clusterHealthResponse = FormElasticManager.cluster().clusterHealth();
+                    ClusterHealthResponse clusterHealthResponse = ElasticManager.cluster().clusterHealth();
                     // 如果es断开连接则消息队列等待到es重新连上后再执行
                     if (clusterHealthResponse == null){
                         // 重置es连接
-                        FormElasticManager.reset();
+                        ElasticManager.reset();
                         // 等待1分钟
                         Thread.sleep(longSleep);
                         freeTime += sleep;
@@ -208,7 +208,7 @@ public final class CanalProcessor {
                     case INSERT:
                     case UPDATE:
                         // 同步更新表单填写数据至es
-                        FormElasticManager.document().addBatch(elasticDocModel.getIndex(), elasticDocModel.getDocList());
+                        ElasticManager.document().bulkInsert(elasticDocModel.getIndex(), elasticDocModel.getDocList());
                         break;
                     case DELETE:
                         List<Map<String, Object>> docList = elasticDocModel.getDocList();
@@ -216,15 +216,9 @@ public final class CanalProcessor {
                             List<String> ids = docList.stream().map(p -> p.getOrDefault(docId, "").toString())
                                     .filter(p -> !StringUtils.isEmpty(p)).collect(Collectors.toList());
 
-                            // 如果id为空，则删除指定登记号数据
-                            if (CollectionUtils.isEmpty(ids)){
-                                List<String> empis = docList.stream().map(p -> p.getOrDefault(empiField, "").toString())
-                                        .filter(p -> !StringUtils.isEmpty(p)).collect(Collectors.toList());
-                                FormElasticManager.document().deleteByEmpis(elasticDocModel.getIndex(), empis);
-                            }else {
-                                // 删除指定id es文档
-                                FormElasticManager.document().deleteByIds(elasticDocModel.getIndex(), ids);
-                            }
+                            // 删除指定id es文档
+                            ElasticManager.document().deleteByDocIds(elasticDocModel.getIndex(), ids);
+
                         }
                         break;
                     default:

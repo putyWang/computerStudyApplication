@@ -4,20 +4,14 @@ import com.learning.core.utils.CommonBeanUtil;
 import com.learning.core.utils.StringUtils;
 import com.learning.es.bean.*;
 import com.learning.es.clients.RestClientFactory;
-import com.learning.es.model.condition.ConditionBuilder;
-import com.learning.es.model.ConfigProperties;
 import com.learning.es.model.QuickConditionBuilder;
 import com.learning.es.model.condition.PropertyMapper;
 import com.learning.es.service.EsServiceImpl;
 import com.learning.es.service.QueryService;
 import com.learning.es.service.SearchService;
-import com.learning.es.utils.DesensitiseUtil;
 import lombok.extern.log4j.Log4j2;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.*;
-import org.elasticsearch.join.query.HasParentQueryBuilder;
-import org.elasticsearch.join.query.JoinQueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -134,116 +128,6 @@ public class SearchServiceImpl<T extends Result>
         result.setData(resultData);
         return result;
     }
-
-//    public AdvancedSearchResult advancedSearch(ConditionBuilder conditionBuilder, int page, int size, String... indices) throws Exception {
-//
-//        QueryBuilder queryBuilder = conditionBuilder
-//                .toQueryBuilder(1);
-//        QueryBuilder querySecondBuilder = conditionBuilder
-//                .toQueryBuilder(2);
-//
-//        int form = (page - 1) * size;
-//        SearchResult searchResult = this.queryService.search(queryBuilder, size, form, indices);
-//        long total = searchResult.getTotal();
-//        List<Map<String, Object>> searchHitMaps = searchResult.getResultData();
-//        Map<String, LinkedHashMap<String, Object>> curChildTypeHit = null;
-//        if (searchHitMaps != null) {
-//            List<String> regNos = new ArrayList<>();
-//
-//            for (Map<String, Object> hitMap : searchHitMaps) {
-//                String curRegNo = hitMap
-//                        .getOrDefault("regno", "")
-//                        .toString();
-//
-//                regNos.add(curRegNo);
-//            }
-//
-//            BoolQueryBuilder filterBuilder = new BoolQueryBuilder();
-//            filterBuilder.filter(new TermsQueryBuilder("regno", regNos));
-//            curChildTypeHit = this.getChildTypeHit(filterBuilder, querySecondBuilder, indices);
-//        }
-//
-//        Map<String, PropertyMapper> mapperMap = conditionBuilder.getMapperMap();
-//        AdvancedSearchResult result = new AdvancedSearchResult();
-//        result.setTotal(total);
-//        List<com.dhcc.mrp.elastic.bean.AdvancedSearchResult.Result> results = new ArrayList();
-//        if (searchHitMaps == null) {
-//            searchHitMaps = new ArrayList();
-//        }
-//
-//        Iterator var36 = ((List) searchHitMaps).iterator();
-//
-//        while (var36.hasNext()) {
-//            Map<String, Object> hitMap = (Map) var36.next();
-//            com.dhcc.mrp.elastic.bean.AdvancedSearchResult.Result curR = new com.dhcc.mrp.elastic.bean.AdvancedSearchResult.Result();
-//            String curRegNo = hitMap.getOrDefault("regno", "").toString();
-//            String curPatientName = hitMap.getOrDefault(ConfigProperties.getKey("es.query.field.patient.name"), "").toString();
-//            String curPatientGender = hitMap.getOrDefault(ConfigProperties.getKey("es.query.field.patient.gender"), "").toString();
-//            String curBirthday = hitMap.getOrDefault(ConfigProperties.getKey("es.query.field.patient.birthday"), "").toString();
-//            curR.setRegNo(curRegNo);
-//            curR.setPatientName(curPatientName);
-//            curR.setPatientGender(curPatientGender);
-//            curR.setPatientBirthday(curBirthday);
-//            LinkedHashMap<String, Object> curHash = curChildTypeHit != null ? (LinkedHashMap) curChildTypeHit.get(curRegNo) : null;
-//            String dishDateField;
-//            if (curHash == null) {
-//                curR.setChildren((List) null);
-//                curR.setChildTotal(0);
-//            } else {
-//                List<Child> childList = new ArrayList();
-//                int count = 0;
-//
-//                Child child;
-//                for (Iterator var26 = curHash.entrySet().iterator(); var26.hasNext(); childList.add(child)) {
-//                    Map.Entry<String, Object> entry = (Map.Entry) var26.next();
-//                    ++count;
-//                    if (count > 5) {
-//                        break;
-//                    }
-//
-//                    HashMap<String, Object> admMap = (HashMap) entry.getValue();
-//                    child = new Child();
-//                    if (admMap != null && admMap.size() > 0) {
-//                        child.setAdmNo(admMap.getOrDefault("admno", "").toString());
-//                        child.setAdmType(admMap.getOrDefault(ConfigProperties.getKey("es.query.field.adm.type"), "").toString());
-//                        child.setAdmDept(admMap.getOrDefault(ConfigProperties.getKey("es.query.field.adm.admdept"), "").toString());
-//                        child.setAdmDate(admMap.getOrDefault(ConfigProperties.getKey("es.query.field.adm.admdate"), "").toString());
-//                        dishDateField = ConfigProperties.getKey("es.query.field.adm.dishdate");
-//                        String dishDeptField = ConfigProperties.getKey("es.query.field.adm.dishdept");
-//                        if (admMap.get(dishDateField) != null) {
-//                            child.setDishDate(admMap.getOrDefault(ConfigProperties.getKey("es.query.field.adm.dishdate"), "").toString());
-//                        }
-//
-//                        if (admMap.get(dishDeptField) != null) {
-//                            child.setDishDept(admMap.getOrDefault(ConfigProperties.getKey("es.query.field.adm.dishdept"), "").toString());
-//                        }
-//                    }
-//                }
-//
-//                curR.setChildren(childList);
-//                curR.setChildTotal(curHash.size());
-//            }
-//
-//            Iterator var37 = hitMap.entrySet().iterator();
-//
-//            while (var37.hasNext()) {
-//                Map.Entry<String, Object> entry = (Map.Entry) var37.next();
-//                String key = (String) entry.getKey();
-//                Object value = entry.getValue();
-//                if (value instanceof String) {
-//                    String valueStr = value.toString();
-//                    int tuoMinType = mapperMap.get(key) == null ? 0 : ((PropertyMapper) mapperMap.get(key)).getTuoMinType();
-//                    dishDateField = DesensitiseUtil.tuoMin(tuoMinType, valueStr);
-//                    hitMap.put(key, dishDateField);
-//                }
-//            }
-//
-//            results.add(curR);
-//        }
-//
-//        result.setData(results);
-//        return result;
-//    }
 
     /**
      * 将搜索结果转化为高亮结果

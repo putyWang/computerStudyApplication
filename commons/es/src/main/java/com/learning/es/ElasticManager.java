@@ -11,7 +11,6 @@ public final class ElasticManager {
     private IndexService indexService;
     private ClusterService clusterService;
     private SearchService searchService;
-    private AggregationService aggregationService;
     private IDSLService dslService;
     private DocumentService documentService;
 
@@ -47,10 +46,6 @@ public final class ElasticManager {
         return getInstance().searchService;
     }
 
-    public static AggregationService aggregation() {
-        return getInstance().aggregationService;
-    }
-
     public static IDSLService dslService() {
         return getInstance().dslService;
     }
@@ -69,7 +64,6 @@ public final class ElasticManager {
         this.indexService = new IndexServiceImpl(restClientFactory);
         this.clusterService = new ClusterServiceImpl(restClientFactory);
         this.searchService = new SearchServiceImpl(restClientFactory);
-        this.aggregationService = new AggregationServiceImpl(restClientFactory);
         this.dslService = new DSLServiceImpl(restClientFactory);
         this.documentService = new DocumentServiceImpl(restClientFactory);
     }
